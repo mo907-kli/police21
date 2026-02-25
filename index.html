@@ -27,11 +27,8 @@
             --font-en: 'Rajdhani', sans-serif;
         }
 
-        /* تعديل السماح بالنسخ */
+        /* 🟢 تم إزالة منع التحديد (user-select: none) ليسمح لك بنسخ أي شيء 🟢 */
         * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
-        body { user-select: none; } /* منع التحديد العام للحفاظ على شكل الموقع */
-        /* السماح بالتحديد للبيانات المهمة */
-        input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
         body {
             background: radial-gradient(circle at center, #0a1120 0%, #030509 100%);
@@ -41,16 +38,9 @@
         }
 
         /* خلفية النجوم الاحترافية */
-        #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
-        .star { 
-            position: absolute; background: white; border-radius: 50%; 
-            animation: twinkle linear infinite alternate; 
-            box-shadow: 0 0 5px rgba(0, 234, 255, 0.5);
-        }
-        @keyframes twinkle { 
-            0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 
-            100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } 
-        }
+        #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;}
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); }
+        @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
 
         .central-logo-bg {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -64,19 +54,11 @@
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
         /* ========================================= */
-        /* --- نافذة تكبير الصور (الجديدة) --- */
+        /* --- واجهة تكبير الصور الفخمة --- */
         /* ========================================= */
-        #imgZoomOverlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999999;
-            display: none; justify-content: center; align-items: center; opacity: 0;
-            transition: opacity 0.3s ease; cursor: zoom-out; backdrop-filter: blur(5px);
-        }
+        #imgZoomOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999999; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; cursor: zoom-out; backdrop-filter: blur(5px); }
         #imgZoomOverlay.active { opacity: 1; }
-        #zoomedImg {
-            max-width: 90vw; max-height: 90vh; border-radius: 8px;
-            box-shadow: 0 0 30px rgba(0,234,255,0.4); border: 2px solid var(--cyan);
-            transform: scale(0.8); transition: transform 0.3s ease;
-        }
+        #zoomedImg { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,234,255,0.4); border: 2px solid var(--cyan); transform: scale(0.8); transition: transform 0.3s ease; }
         #imgZoomOverlay.active #zoomedImg { transform: scale(1); }
 
         /* ========================================= */
@@ -92,9 +74,9 @@
         .nav-right { display: flex; align-items: center; gap: 40px; }
         .nav-logo { width: 45px; height: 45px; background: url('yyW7oBx.jpg') center/cover; border-radius: 50%; box-shadow: 0 0 10px rgba(0,234,255,0.3); border: 1px solid var(--cyan);}
         .nav-links { display: flex; gap: 30px; }
-        .nav-links a { color: #8da2b5; text-decoration: none; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .nav-links a { color: #8da2b5; text-decoration: none; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: 0.3s; user-select: none; }
         .nav-links a:hover, .nav-links a.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .nav-left button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); padding: 10px 25px; border-radius: 4px; font-family: var(--font-ar); font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .nav-left button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); padding: 10px 25px; border-radius: 4px; font-family: var(--font-ar); font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; user-select: none; }
         .nav-left button:hover { background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan-glow); }
 
         .public-section { scroll-margin-top: 85px; }
@@ -111,7 +93,7 @@
         .hero-content h1 { font-size: 5rem; color: #fff; font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 30px rgba(0,234,255,0.4); }
         .hero-content h1 span { color: var(--cyan); }
         .hero-content p { font-size: 1.25rem; color: #ccc; line-height: 1.8; margin-bottom: 40px; }
-        .hero-btn { background: var(--cyan); border: none; color: #000; padding: 16px 45px; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: var(--font-ar); box-shadow: 0 0 20px var(--cyan-glow); }
+        .hero-btn { background: var(--cyan); border: none; color: #000; padding: 16px 45px; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; font-family: var(--font-ar); box-shadow: 0 0 20px var(--cyan-glow); user-select: none;}
         .hero-btn:hover { background: #fff; transform: scale(1.05); }
 
         .community-section { width: 100%; padding: 80px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -139,7 +121,7 @@
         .accordion-container { width: 100%; max-width: 900px; padding: 0 20px; margin-top: 40px;}
         .accordion-item { margin-bottom: 12px; border-radius: 6px; overflow: hidden; background: rgba(20, 26, 40, 0.4); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; backdrop-filter: blur(5px);}
         .accordion-item:hover { border-color: rgba(0, 234, 255, 0.3); }
-        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; cursor: pointer; transition: 0.3s; flex-direction: row-reverse; }
+        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; cursor: pointer; transition: 0.3s; flex-direction: row-reverse; user-select: none;}
         .acc-title-box { display: flex; align-items: center; gap: 12px; flex-direction: row-reverse; }
         .acc-dot { width: 12px; height: 12px; background: #c2c2c2; border-radius: 50%; }
         .acc-title { font-size: 1.1rem; font-weight: bold; color: #fff; text-align: right; }
@@ -161,7 +143,7 @@
         .job-card:hover { border-color: rgba(0,234,255,0.2); transform: translateY(-5px); }
         .job-card h3 { color: #fff; font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; }
         .job-card p { color: #888; font-size: 1rem; line-height: 1.6; margin-bottom: 30px; }
-        .job-btn-open { width: 100%; background: rgba(0, 255, 106, 0.1); border: 1px solid rgba(0, 255, 106, 0.3); color: var(--green); padding: 15px; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; text-align: center; font-family: var(--font-ar); transition: 0.3s; }
+        .job-btn-open { width: 100%; background: rgba(0, 255, 106, 0.1); border: 1px solid rgba(0, 255, 106, 0.3); color: var(--green); padding: 15px; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; text-align: center; font-family: var(--font-ar); transition: 0.3s; user-select: none;}
         .job-btn-open:hover { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,106,0.3); }
 
         .founders-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1200px; padding: 40px 20px; width: 100%;}
@@ -193,30 +175,31 @@
         .inp-group i { position: absolute; top: 50%; transform: translateY(-50%); color: var(--cyan); opacity: 0.7; right: 15px; }
         .login-input { width: 100%; padding: 15px 45px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; outline: none; border-radius: 4px; font-family: var(--font-ar); transition: 0.3s;}
         .login-input:focus { border-color: var(--cyan); background: rgba(0,234,255,0.05); }
-        .login-btn { width: 100%; padding: 15px; margin-top: 10px; background: var(--cyan); border: none; color: #000; font-weight: bold; font-size: 1.2rem; border-radius: 4px; cursor: pointer; transition: 0.3s; font-family: var(--font-ar);}
+        .login-btn { width: 100%; padding: 15px; margin-top: 10px; background: var(--cyan); border: none; color: #000; font-weight: bold; font-size: 1.2rem; border-radius: 4px; cursor: pointer; transition: 0.3s; font-family: var(--font-ar); user-select: none;}
         .login-btn:hover { background: #fff; box-shadow: 0 0 20px var(--cyan-glow); }
         .error-msg { color: var(--red); font-size: 0.9rem; margin-top: 15px; display: none; font-weight: bold; }
-        .back-login-btn { background: transparent; border: none; color: #888; margin-top: 20px; cursor: pointer; font-family: var(--font-ar); text-decoration: underline; font-size: 0.95rem; transition: 0.3s;}
+        .back-login-btn { background: transparent; border: none; color: #888; margin-top: 20px; cursor: pointer; font-family: var(--font-ar); text-decoration: underline; font-size: 0.95rem; transition: 0.3s; user-select: none;}
         .back-login-btn:hover { color: #fff; }
 
         /* ========================================= */
-        /* --- لوحة تحكم الشرطة (الداخلية) --- */
+        /* --- لوحة تحكم الشرطة (الداخلية) + إصلاح السكرول والنجوم --- */
         /* ========================================= */
-        #mainWrapper { display: none; flex: 1; flex-direction: column; transition: opacity 0.5s ease; height: 100vh; position: fixed; inset: 0; overflow: hidden; background: var(--bg-deep);}
-        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; z-index: 10; border-bottom: 1px solid var(--glass-border); flex-shrink: 0;}
+        /* 🟢 تم جعل الخلفية شفافة لتظهر النجوم خلف لوحة التحكم 🟢 */
+        #mainWrapper { display: none; flex: 1; flex-direction: column; transition: opacity 0.5s ease; height: 100vh; position: fixed; inset: 0; overflow: hidden; background: transparent;}
+        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; z-index: 10; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; background: rgba(3,5,9,0.8); backdrop-filter: blur(10px);}
         .header-side { display: flex; gap: 10px; align-items: center; }
-        .pill-btn { background: rgba(15, 20, 35, 0.6); border: 1px solid var(--btn-border); padding: 8px 18px; border-radius: 25px; color: #ccc; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); }
+        .pill-btn { background: rgba(15, 20, 35, 0.6); border: 1px solid var(--btn-border); padding: 8px 18px; border-radius: 25px; color: #ccc; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); user-select: none; }
         .pill-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); color: #fff; }
         .sys-title { font-size: 1rem; font-weight: bold; color: #999; letter-spacing: 1px; }
 
         #dashboardView { flex: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 60px; animation: fadeIn 0.4s ease; overflow-y: auto;}
         .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 75%; max-width: 950px; margin: 0 auto; }
-        .menu-btn { background: var(--btn-bg); border: 1px solid var(--btn-border); border-radius: 8px; padding: 22px 10px; text-align: center; color: #ddd; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+        .menu-btn { background: var(--btn-bg); border: 1px solid var(--btn-border); border-radius: 8px; padding: 22px 10px; text-align: center; color: #ddd; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(5px); user-select: none;}
         .menu-btn:hover { background: var(--btn-hover); border-color: var(--btn-hover-border); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 234, 255, 0.1); }
 
-        .btn-acc { background: rgba(0, 255, 106, 0.15); color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-ar); margin-left: 10px; }
+        .btn-acc { background: rgba(0, 255, 106, 0.15); color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-ar); margin-left: 10px; user-select: none;}
         .btn-acc:hover { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,106,0.4); }
-        .btn-rej { background: rgba(255, 51, 51, 0.15); color: var(--red); border: 1px solid var(--red); padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-ar); }
+        .btn-rej { background: rgba(255, 51, 51, 0.15); color: var(--red); border: 1px solid var(--red); padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-family: var(--font-ar); user-select: none;}
         .btn-rej:hover { background: var(--red); color: #fff; box-shadow: 0 0 15px rgba(255,51,51,0.4); }
         .badge-status { padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; border: 1px solid; }
 
@@ -225,27 +208,27 @@
             max-height: calc(100vh - 100px); 
             padding-bottom: 20px; animation: slideUpFade 0.4s ease; 
         }
-        .module-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px; flex-direction: row-reverse; }
+        .module-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-top: 20px; margin-bottom: 20px; flex-direction: row-reverse; }
         .module-title { font-size: 1.5rem; color: var(--cyan); font-weight: bold; margin: 0; }
-        .back-btn { background: transparent; border: 1px solid var(--btn-border); color: #ccc; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.95rem; font-family: var(--font-ar); font-weight:bold;}
+        .back-btn { background: rgba(10, 15, 25, 0.6); border: 1px solid var(--btn-border); color: #ccc; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.95rem; font-family: var(--font-ar); font-weight:bold; backdrop-filter: blur(5px); user-select: none;}
         .back-btn:hover { background: rgba(255,255,255,0.05); border-color: #fff; color: #fff; }
         
         #dynamicContentArea { flex: 1; overflow-y: auto; margin-bottom: 20px; padding-right: 5px; }
         #dynamicContentArea::-webkit-scrollbar { width: 4px; } #dynamicContentArea::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 4px; }
 
-        .input-section { flex-shrink: 0; background: rgba(10, 15, 25, 0.4); border: 1px solid var(--btn-border); padding: 20px; border-radius: 8px; backdrop-filter: blur(5px);}
-        .gen-input { width: 100%; padding: 12px; background: #010204; border: 1px solid var(--btn-border); color: #fff; margin-bottom: 10px; border-radius: 6px; outline: none; transition: 0.3s; font-family: var(--font-ar); font-size: 0.95rem; text-align: right;}
+        .input-section { flex-shrink: 0; background: rgba(10, 15, 25, 0.6); border: 1px solid var(--btn-border); padding: 20px; border-radius: 8px; backdrop-filter: blur(10px);}
+        .gen-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--btn-border); color: #fff; margin-bottom: 10px; border-radius: 6px; outline: none; transition: 0.3s; font-family: var(--font-ar); font-size: 0.95rem; text-align: right;}
         .gen-input:focus { border-color: var(--cyan); }
         select.gen-input { appearance: none; cursor: pointer; color: #888; } select.gen-input option { background: #000; color: #fff; }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
-        .file-input-wrapper { position: relative; margin-bottom: 10px; border: 1px dashed var(--btn-border); border-radius: 6px; background: rgba(0,0,0,0.3); height: 50px; overflow: hidden; transition: 0.3s; }
+        .file-input-wrapper { position: relative; margin-bottom: 10px; border: 1px dashed var(--btn-border); border-radius: 6px; background: rgba(0,0,0,0.4); height: 50px; overflow: hidden; transition: 0.3s; }
         .file-input-wrapper:hover { border-color: var(--cyan); }
         .file-input-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; }
         .file-label-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-size: 0.95rem; pointer-events: none; width: 100%; text-align: center;}
-        .submit-btn { width: 100%; padding: 12px; background: var(--cyan); border: none; font-weight: bold; font-size: 1.1rem; border-radius: 6px; cursor: pointer; color: #000; transition: 0.3s; font-family: var(--font-ar);}
-        .submit-btn:hover { background: #fff; }
+        .submit-btn { width: 100%; padding: 12px; background: var(--cyan); border: none; font-weight: bold; font-size: 1.1rem; border-radius: 6px; cursor: pointer; color: #000; transition: 0.3s; font-family: var(--font-ar); user-select: none;}
+        .submit-btn:hover { background: #fff; box-shadow: 0 0 15px var(--cyan-glow); }
 
-        .rec-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: center; color: #ddd; font-size: 0.95rem; }
+        .rec-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: center; color: #ddd; font-size: 0.95rem; background: rgba(20,26,40,0.6); border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--btn-border); backdrop-filter: blur(5px);}
         .action-icon { cursor: pointer; margin: 0 5px; font-size: 1.1rem; transition: 0.2s; opacity: 0.8;}
         .action-icon:hover { transform: scale(1.2); opacity: 1; }
         .icon-del { color: var(--red); }
@@ -257,13 +240,13 @@
         .badge-approved { background: rgba(0, 255, 106, 0.1); color: var(--green); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; border: 1px solid var(--green);}
 
         .video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .video-card { background: #000; border: 1px solid var(--btn-border); border-radius: 8px; padding: 10px; position: relative; }
+        .video-card { background: rgba(0,0,0,0.6); border: 1px solid var(--btn-border); border-radius: 8px; padding: 10px; position: relative; backdrop-filter: blur(5px);}
         .video-player { width: 100%; aspect-ratio: 16/9; border-radius: 4px; border: 1px solid #111;}
         .del-video-btn { position: absolute; top: -10px; left: -10px; background: var(--red); color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; z-index: 10; display:flex; justify-content:center; align-items:center;}
 
         .crypto-area textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.5); border: 1px solid var(--btn-border); border-radius: 4px; color: var(--cyan); padding: 10px; margin-bottom: 10px; outline: none; font-family: monospace; resize: none;}
         .crypto-res { background: rgba(0,0,0,0.5); border: 1px solid var(--btn-border); border-radius: 4px; padding: 15px; color: #fff; min-height: 50px; font-family: monospace; word-break: break-all; padding-inline-end: 45px; }
-        .close-btn { width: 100%; background: transparent; border: 1px solid #333; color: #888; padding: 10px; margin-top: 5px; cursor: pointer; border-radius: 6px; transition: 0.3s; font-family: var(--font-ar);}
+        .close-btn { width: 100%; background: transparent; border: 1px solid #333; color: #888; padding: 10px; margin-top: 5px; cursor: pointer; border-radius: 6px; transition: 0.3s; font-family: var(--font-ar); user-select: none;}
         .close-btn:hover { border-color: var(--red); color: var(--red); }
     </style>
 </head>
@@ -329,7 +312,7 @@
 
         <div id="rulesTab">
             <div class="animated-banner">
-                <div class="anim-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1079065638502404167/1476008959059165265/iZe62uD.png?ex=699f8ff6&is=699e3e76&hm=9aea1f23775ddd66084de90b863e28cf1f76b267fd645739e20c749aece62cbd&');"></div>
+                <div class="anim-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1079065638502404167/1476008959059165265/iZe62uD.png?ex=699f8ff6&is=699e4e76&hm=9aea1f23775ddd66084de90b863e28cf1f76b267fd645739e20c749aece62cbd&');"></div>
                 <div class="anim-overlay"></div>
                 <div class="anim-content">
                     <h1 class="anim-title">الدستور <span>والقوانين</span></h1>
@@ -517,7 +500,7 @@
             </div>
             <div class="sys-title" id="appTitleText">إدارة الشرطة</div>
             <div class="header-side" style="flex-direction: row-reverse;">
-                <div class="pill-btn" onclick="openProfile()" title="الملف الشخصي" style="color: #fff;">
+                <div class="pill-btn" title="الملف الشخصي" style="color: #fff; cursor: default;">
                     <span id="rankNameDisp">--</span>
                     <i class="fa-solid fa-id-badge" style="margin-right: 5px; color: #888;"></i>
                 </div>
@@ -562,6 +545,40 @@
     </div>
 
     <script>
+        // 🚨 ضع رابط الديسكورد ويب هوك حقك هنا عشان يوصلك التقديم بالديسكورد 🚨
+        const DISCORD_WEBHOOK_URL = ""; 
+
+        // دالة إرسال للديسكورد (عشان يجيك التقديم من أي شخص بالعالم)
+        function sendToDiscord(type, name, discord, age, exp, reason) {
+            if(!DISCORD_WEBHOOK_URL) return;
+            
+            let embedColor = type === 'police' ? 3447003 : 16753920; // أزرق للشرطة، برتقالي لنفسك
+            let embedTitle = type === 'police' ? "👮 تقديم شرطة جديد" : "📝 تقديم 'قدم نفسك' جديد";
+
+            let payload = {
+                username: "نظام التقديمات - تايتنز",
+                avatar_url: "https://i.imgur.com/yyW7oBx.jpg",
+                embeds: [{
+                    title: embedTitle,
+                    color: embedColor,
+                    fields: [
+                        { name: "👤 الاسم", value: name, inline: true },
+                        { name: "🎮 الديسكورد", value: discord, inline: true },
+                        { name: "📅 العمر", value: age, inline: true },
+                        { name: "📚 الخبرات/المهارات", value: exp || "لا يوجد" },
+                        { name: "❓ السبب", value: reason || "لا يوجد" }
+                    ],
+                    footer: { text: "تاريخ التقديم: " + new Date().toLocaleDateString() }
+                }]
+            };
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error("Error sending to Discord:", err));
+        }
+
         // توليد النجوم في الخلفية
         function createStars() {
             const starBg = document.getElementById('star-bg');
@@ -609,8 +626,12 @@
             const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim();
             if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
             
+            // حفظ محلي للداشبورد
             db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' });
             localStorage.setItem('lspd_applications', JSON.stringify(db.applications));
+            
+            // إرسال لديسكورد
+            sendToDiscord('police', n, d, a, exp, reason);
             
             closeAppModal();
             showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.");
@@ -637,8 +658,12 @@
         }
 
         function saveSelfApp(n, d, a, exp, reason, fileData) {
+            // حفظ محلي
             db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' });
             localStorage.setItem('lspd_applications', JSON.stringify(db.applications));
+            
+            // إرسال لديسكورد
+            sendToDiscord('self', n, d, a, exp, reason);
             
             closeSelfAppModal();
             showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.");
@@ -695,7 +720,7 @@
         let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [] };
 
         window.onload = () => { 
-            createStars(); // تشغيل خلفية النجوم
+            createStars();
             try { let savedApps = JSON.parse(localStorage.getItem('lspd_applications')); if(Array.isArray(savedApps)) db.applications = savedApps; } catch(e) { db.applications = []; }
             applyLanguage(); 
         };
@@ -833,7 +858,6 @@
                     }
                 }
 
-                // تم إضافة class="allow-select" ليسمح بالنسخ
                 container.innerHTML += `
                 <div class="allow-select" style="background:rgba(20,26,40,0.6); border:1px solid var(--btn-border); border-radius:8px; padding:20px; margin-bottom:15px; position:relative; text-align:right;">
                     ${delBtn}
@@ -890,4 +914,3 @@
     </script>
 </body>
 </html>
-
