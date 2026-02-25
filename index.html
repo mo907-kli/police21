@@ -34,9 +34,9 @@
         body { user-select: none; background: radial-gradient(circle at center, #0a1120 0%, #030509 100%); color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
-        /* 🟢 النجوم تم تعديل طبقتها لتكون خلفية ثابتة وواضحة 🟢 */
-        #star-bg { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
-        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); }
+        /* خلفية النجوم الاحترافية (مسرعة ومحسنة) */
+        #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); will-change: transform, opacity; }
         @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
 
         .central-logo-bg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 450px; z-index: -1; opacity: 0.04; pointer-events: none; background-image: url('yyW7oBx.jpg'); background-size: cover; background-position: center; border-radius: 50%; clip-path: circle(47% at 50% 50%); }
@@ -45,14 +45,13 @@
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
+        /* نافذة تكبير الصور */
         #imgZoomOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999999; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s ease; cursor: zoom-out; backdrop-filter: blur(5px); }
         #imgZoomOverlay.active { opacity: 1; }
         #zoomedImg { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,234,255,0.4); border: 2px solid var(--cyan); transform: scale(0.8); transition: transform 0.2s ease; }
         #imgZoomOverlay.active #zoomedImg { transform: scale(1); }
 
-        /* تعديل طبقة الموقع لتكون فوق النجوم مباشرة */
-        #publicSite { position: relative; z-index: 2; display: flex; flex-direction: column; width: 100%; min-height: 100vh; transition: opacity 0.15s ease; }
-        
+        #publicSite { display: flex; flex-direction: column; width: 100%; min-height: 100vh; transition: opacity 0.15s ease; }
         .public-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 80px; background: rgba(3, 5, 9, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(15px); }
         .nav-right { display: flex; align-items: center; gap: 40px; }
         .nav-logo { width: 45px; height: 45px; background: url('yyW7oBx.jpg') center/cover; border-radius: 50%; box-shadow: 0 0 10px rgba(0,234,255,0.3); border: 1px solid var(--cyan);}
@@ -160,7 +159,7 @@
         .back-login-btn { background: transparent; border: none; color: #888; margin-top: 20px; cursor: pointer; font-family: var(--font-ar); text-decoration: underline; font-size: 0.95rem; transition: 0.2s; user-select: none;}
         .back-login-btn:hover { color: #fff; }
 
-        /* تعديل طبقة لوحة التحكم */
+        /* لوحة التحكم */
         #mainWrapper { position: fixed; inset: 0; z-index: 2; display: none; flex: 1; flex-direction: column; transition: opacity 0.15s ease; height: 100vh; overflow: hidden; background: transparent; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; z-index: 10; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; background: rgba(3,5,9,0.8); backdrop-filter: blur(10px);}
         .header-side { display: flex; gap: 10px; align-items: center; }
@@ -595,23 +594,31 @@
         let currentLang = 'ar'; let currentModule = null;
         let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { policeOpen: true, selfOpen: true } };
 
+        // 🟢 فلتر لتنظيف البيانات وإصلاح مشكلة Firebase مع المصفوفات المحذوفة 🟢
+        function cleanArray(data) {
+            if (!data) return [];
+            if (Array.isArray(data)) return data.filter(item => item !== null && item !== undefined);
+            return Object.values(data).filter(item => item !== null && item !== undefined);
+        }
+
         database.ref('lspd_db').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                db.applications = data.applications || [];
-                db.reports = data.reports || [];
-                db.tasks = data.tasks || [];
-                db.wanted = data.wanted || [];
-                db.maps = data.maps || [];
-                db.officials = data.officials || [];
-                db.video = data.video || [];
-                db.gangs = data.gangs || [];
-                db.armory = data.armory || [];
-                db.notes = data.notes || [];
-                db.saved = data.saved || [];
-                db.blackbox = data.blackbox || [];
-                db.crypto = data.crypto || [];
-                db.customUsers = data.customUsers || [];
+                // 🟢 استخدام الفلتر هنا لضمان عدم توقف النظام 🟢
+                db.applications = cleanArray(data.applications);
+                db.reports = cleanArray(data.reports);
+                db.tasks = cleanArray(data.tasks);
+                db.wanted = cleanArray(data.wanted);
+                db.maps = cleanArray(data.maps);
+                db.officials = cleanArray(data.officials);
+                db.video = cleanArray(data.video);
+                db.gangs = cleanArray(data.gangs);
+                db.armory = cleanArray(data.armory);
+                db.notes = cleanArray(data.notes);
+                db.saved = cleanArray(data.saved);
+                db.blackbox = cleanArray(data.blackbox);
+                db.crypto = cleanArray(data.crypto);
+                db.customUsers = cleanArray(data.customUsers);
                 db.settings = data.settings || { policeOpen: true, selfOpen: true };
             }
             updatePublicJobButtons();
@@ -845,6 +852,37 @@
             users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (canManageAccounts && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
         }
 
+        // 🟢 إرجاع عرض المهام والفيديوهات المفقودة 🟢
+        function renderTasksTable() {
+            const container = document.getElementById('tasksTableContainer'); if(!container) return;
+            if(!db.tasks || db.tasks.length === 0) { container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">لا توجد مهام مسجلة حالياً</div>'; return; }
+            let html = '<table class="task-table"><tr><th>المستلم</th><th>المسؤول</th><th>المهمة</th><th>النقاط</th><th>الحالة</th><th>إجراء</th></tr>';
+            db.tasks.forEach((t, idx) => {
+                let statusHtml = t.approved ? '<span class="badge-approved">معتمدة ✔️</span>' : '<span class="badge-pending">قيد الانتظار ⏳</span>';
+                let actionHtml = '';
+                if(canManageAccounts || isHighCommand) { 
+                    actionHtml += `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})" title="حذف"></i>`;
+                    if(!t.approved) actionHtml += ` <i class="fa-solid fa-check action-icon" style="color:var(--green); margin-right:10px;" onclick="approveTask(${idx})" title="اعتماد"></i>`;
+                }
+                html += `<tr><td>${t.assignee}</td><td>${t.officer}</td><td>${t.reason}</td><td>${t.pts}</td><td>${statusHtml}</td><td>${actionHtml}</td></tr>`;
+            });
+            html += '</table>'; container.innerHTML = html;
+        }
+
+        function renderVideoGrid() {
+            const container = document.getElementById('videoGridContainer'); if(!container) return; container.innerHTML = '';
+            if(!db.video || db.video.length === 0) { container.innerHTML = '<div style="text-align:center; padding:20px; color:#888; grid-column: 1 / -1;">لا توجد مقاطع حالياً</div>'; return; }
+            db.video.forEach((vid, idx) => {
+                const delBtn = (canManageAccounts || isHighCommand) ? `<button class="del-video-btn" onclick="delRec(${idx})"><i class="fa-solid fa-xmark"></i></button>` : '';
+                let content = '';
+                if(vid.yt) {
+                    let ytId = vid.yt.includes('v=') ? vid.yt.split('v=')[1].split('&')[0] : vid.yt.split('/').pop();
+                    content = `<iframe class="video-player" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe>`;
+                } else if (vid.file) { content = `<video class="video-player" src="${vid.file}" controls></video>`; }
+                container.innerHTML += `<div class="video-card">${delBtn}<div style="margin-bottom:10px; font-weight:bold; color:var(--cyan); text-align:right;">${vid.title}</div>${content}</div>`;
+            });
+        }
+
         function renderRecords() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
             db[currentModule.id].forEach((rec, idx) => { const del = (canManageAccounts || isHighCommand) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;">${rec}</div></div>`; });
@@ -855,39 +893,43 @@
                 if(!canManageAccounts) return; 
                 const u = document.getElementById('o-user').value.trim(), p = document.getElementById('o-pass').value.trim(), n = document.getElementById('o-name').value.trim(), r = document.getElementById('o-rank').value;
                 if(!u || !p || !n || !r) return showCustomAlert("تنبيه", i18n[currentLang]['o_err']);
-                let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; db.customUsers = db.customUsers || []; 
+                let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; db.customUsers = cleanArray(db.customUsers); 
                 if(configU.some(x => x.user === u) || db.customUsers.some(x => x.user === u)) return showCustomAlert("تنبيه", i18n[currentLang]['o_exists']);
                 db.customUsers.push({ user: u, pass: p, name: n, rank: r }); saveDB(); showCustomAlert("نجاح", "تم إضافة الحساب بنجاح!"); ['o-user','o-pass','o-name','o-rank'].forEach(id => document.getElementById(id).value = ''); 
             } else if(currentModule.isTable) {
                 const assignee = document.getElementById('t-assignee').value.trim(); const officer = document.getElementById('t-officer').value.trim();
                 const reason = document.getElementById('t-reason').value.trim(); const pts = document.getElementById('t-pts').value.trim();
                 if(!assignee || !officer || !reason || !pts) return showCustomAlert("تنبيه", "يرجى تعبئة جميع الحقول!");
-                db.tasks = db.tasks || []; db.tasks.push({ assignee, officer, reason, pts, approved: false });
+                db.tasks = cleanArray(db.tasks); db.tasks.push({ assignee, officer, reason, pts, approved: false });
                 saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح!"); ['t-assignee','t-officer','t-reason','t-pts'].forEach(id => document.getElementById(id).value = '');
             } else if(currentModule.isVideo) {
                 const title = document.getElementById('v-title').value.trim(); const yt = document.getElementById('v-yt').value.trim(); const fileInput = document.getElementById('v-file');
                 if(!title) return showCustomAlert("تنبيه", "يرجى كتابة عنوان الفيديو!");
                 if(!yt && (!fileInput.files || !fileInput.files[0])) return showCustomAlert("تنبيه", "يرجى وضع رابط يوتيوب أو إرفاق ملف!");
+                db.video = cleanArray(db.video);
                 if(fileInput.files && fileInput.files[0]) {
                     const reader = new FileReader();
-                    reader.onload = function(e) { db.video = db.video || []; db.video.push({ title: title, file: e.target.result }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-file').value = ''; document.getElementById('v-file-name').innerText = 'أو ملف'; };
+                    reader.onload = function(e) { db.video.push({ title: title, file: e.target.result }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-file').value = ''; document.getElementById('v-file-name').innerText = 'أو ملف'; };
                     reader.readAsDataURL(fileInput.files[0]);
-                } else { db.video = db.video || []; db.video.push({ title: title, yt: yt }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-yt').value = ''; }
+                } else { db.video.push({ title: title, yt: yt }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-yt').value = ''; }
             } else if(currentModule.isReportForm) {
                 const badge = document.getElementById('r-badge').value.trim(); const name = document.getElementById('r-name').value.trim(); const crim = document.getElementById('r-crim').value.trim(); const details = document.getElementById('r-details').value.trim();
                 if(!badge || !name || !crim || !details) return showCustomAlert("تنبيه", "يرجى تعبئة جميع الحقول!");
                 const fileInput = document.getElementById('r-image');
                 let reportStr = `<div style="font-weight:bold; color:var(--cyan); margin-bottom:5px;">تقرير: ${crim}</div><div style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">بواسطة: [${badge}] ${name}</div><div style="line-height:1.6; color:#ddd;">${details}</div>`;
+                db.reports = cleanArray(db.reports);
                 if(fileInput.files && fileInput.files.length > 0) {
                     const reader = new FileReader();
-                    reader.onload = function(e) { reportStr += `<div style="margin-top:10px;"><img src="${e.target.result}" style="width:100px; border-radius:4px; cursor:zoom-in; border:1px solid var(--cyan);" onclick="openImgZoom('${e.target.result}')"></div>`; db.reports = db.reports || []; db.reports.push(reportStr); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); ['r-badge','r-name','r-crim','r-details'].forEach(id => document.getElementById(id).value = ''); fileInput.value=''; document.getElementById('file-count').innerText='إرفاق ملفات'; }
+                    reader.onload = function(e) { reportStr += `<div style="margin-top:10px;"><img src="${e.target.result}" style="width:100px; border-radius:4px; cursor:zoom-in; border:1px solid var(--cyan);" onclick="openImgZoom('${e.target.result}')"></div>`; db.reports.push(reportStr); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); ['r-badge','r-name','r-crim','r-details'].forEach(id => document.getElementById(id).value = ''); fileInput.value=''; document.getElementById('file-count').innerText='إرفاق ملفات'; }
                     reader.readAsDataURL(fileInput.files[0]);
-                } else { db.reports = db.reports || []; db.reports.push(reportStr); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); ['r-badge','r-name','r-crim','r-details'].forEach(id => document.getElementById(id).value = ''); }
+                } else { db.reports.push(reportStr); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); ['r-badge','r-name','r-crim','r-details'].forEach(id => document.getElementById(id).value = ''); }
             } else {
                 let vals = [], empty = false; const arr = currentLang === 'ar' ? currentModule.inputsAr : currentModule.inputsEn; if(!arr) return;
                 arr.forEach((_, i) => { const v = document.getElementById(`inp-${i}`).value.trim(); if(!v) empty = true; vals.push(v); }); 
                 if(empty) return showCustomAlert("تنبيه", "يرجى تعبئة جميع الحقول!");
-                db[currentModule.id] = db[currentModule.id] || [];
+                
+                db[currentModule.id] = cleanArray(db[currentModule.id]);
+
                 if(currentModule.hasImage) {
                     const fileInput = document.getElementById('inp-image'); 
                     if(fileInput && fileInput.files && fileInput.files[0]) {
@@ -899,8 +941,8 @@
         }
 
         function delAccount(idx) { db.customUsers.splice(idx, 1); saveDB(); }
-        function delRec(idx) { db[currentModule.id].splice(idx, 1); saveDB(); }
-        function approveTask(idx) { if(!isHighCommand) return; db.tasks[idx].approved = true; saveDB(); }
+        function delRec(idx) { db[currentModule.id] = cleanArray(db[currentModule.id]); db[currentModule.id].splice(idx, 1); saveDB(); }
+        function approveTask(idx) { if(!isHighCommand) return; db.tasks = cleanArray(db.tasks); db.tasks[idx].approved = true; saveDB(); }
 
         function showCustomAlert(title, message) { document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerText = message; document.getElementById('customAlertOverlay').style.display = 'flex'; }
         
@@ -909,9 +951,9 @@
         function openSelfAppModal() { if(db.settings && db.settings.selfOpen === false) { showCustomAlert("عذراً", "التقديم لقدم نفسك مغلق حالياً من قبل الإدارة."); return; } document.getElementById('selfAppModal').style.display = 'flex'; }
         function closeSelfAppModal() { document.getElementById('selfAppModal').style.display = 'none'; document.getElementById('self-file-name').innerText = 'إرفاق صورة (اختياري)'; document.getElementById('self-file-name').style.color = '#888'; }
 
-        function submitApplication() { const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim(); if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; } db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' }); saveDB(); closeAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً."); ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); }
+        function submitApplication() { const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim(); if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; } db.applications = cleanArray(db.applications); db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' }); saveDB(); closeAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً."); ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); }
         function submitSelfApplication() { const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim(); const fileInput = document.getElementById('selfFile'); if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; } let fileData = null; if (fileInput.files && fileInput.files[0]) { const reader = new FileReader(); reader.onload = function(e) { fileData = { name: fileInput.files[0].name, data: e.target.result }; saveSelfApp(n, d, a, exp, reason, fileData); }; reader.readAsDataURL(fileInput.files[0]); } else { saveSelfApp(n, d, a, exp, reason, null); } }
-        function saveSelfApp(n, d, a, exp, reason, fileData) { db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' }); saveDB(); closeSelfAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً."); ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = ''); document.getElementById('selfFile').value = ''; }
+        function saveSelfApp(n, d, a, exp, reason, fileData) { db.applications = cleanArray(db.applications); db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' }); saveDB(); closeSelfAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً."); ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = ''); document.getElementById('selfFile').value = ''; }
         
         function switchPublicTab(tabId, el) { document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active')); if(el) el.classList.add('active'); if (tabId === 'home' && document.getElementById('homeTab').style.display === 'flex') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; } document.getElementById('homeTab').style.display = 'none'; document.getElementById('rulesTab').style.display = 'none'; document.getElementById('jobsTab').style.display = 'none'; document.getElementById('foundersTab').style.display = 'none'; document.getElementById(tabId + 'Tab').style.display = 'flex'; window.scrollTo({ top: 0, behavior: 'auto' }); }
         function toggleAccordion(element) { const item = element.parentElement; const content = item.querySelector('.accordion-content'); const isActive = item.classList.contains('active'); document.querySelectorAll('.accordion-item').forEach(otherItem => { otherItem.classList.remove('active'); otherItem.querySelector('.accordion-content').style.maxHeight = null; otherItem.querySelector('.acc-icon').innerText = '+'; }); if (!isActive) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; element.querySelector('.acc-icon').innerText = '-'; } }
