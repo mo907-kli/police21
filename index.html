@@ -167,10 +167,13 @@
         .pill-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); color: #fff; }
         .sys-title { font-size: 1rem; font-weight: bold; color: #999; letter-spacing: 1px; }
 
-        #dashboardView { flex: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 60px; animation: fadeIn 0.3s ease; overflow-y: auto;}
+        #dashboardView { flex: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 60px; animation: fadeIn 0.3s ease; overflow-y: auto; flex-direction: column;}
         .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 75%; max-width: 950px; margin: 0 auto; }
         .menu-btn { background: var(--btn-bg); border: 1px solid var(--btn-border); border-radius: 8px; padding: 22px 10px; text-align: center; color: #ddd; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(5px); user-select: none;}
         .menu-btn:hover { background: var(--btn-hover); border-color: var(--btn-hover-border); color: #fff; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 234, 255, 0.1); }
+
+        /* 🟢 تنسيق الصورة الجديدة في أعلى لوحة التحكم 🟢 */
+        .dashboard-top-logo { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 3px solid var(--cyan); box-shadow: 0 0 30px rgba(0, 234, 255, 0.2); margin-bottom: 40px; }
 
         .btn-acc { background: rgba(0, 255, 106, 0.15); color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: var(--font-ar); margin-left: 10px; user-select: none;}
         .btn-acc:hover { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,106,0.4); }
@@ -199,11 +202,10 @@
         .submit-btn { width: 100%; padding: 12px; background: var(--cyan); border: none; font-weight: bold; font-size: 1.1rem; border-radius: 6px; cursor: pointer; color: #000; transition: 0.2s; font-family: var(--font-ar); user-select: none;}
         .submit-btn:hover { background: #fff; box-shadow: 0 0 15px var(--cyan-glow); }
 
-        /* 🟢 تعديل شكل السجلات العادية لتكون مرتبة من فوق 🟢 */
         .rec-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: flex-start; color: #ddd; font-size: 0.95rem; background: rgba(20,26,40,0.6); border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--btn-border); backdrop-filter: blur(5px);}
         .action-icon { cursor: pointer; margin: 0 5px; font-size: 1.1rem; transition: 0.2s; opacity: 0.8;}
         .action-icon:hover { transform: scale(1.2); opacity: 1; }
-        .icon-del { color: var(--red); margin-top: 5px;} /* عشان تتساوى مع السطر الأول */
+        .icon-del { color: var(--red); margin-top: 5px;}
         
         .task-table { width: 100%; border-collapse: collapse; text-align: center; }
         .task-table th { background: rgba(0,234,255,0.03); color: var(--cyan); padding: 12px; border: 1px solid var(--btn-border); font-weight: bold; position: sticky; top: 0;}
@@ -309,7 +311,7 @@
                     <div class="accordion-content"><div class="accordion-inner"><div class="rule-text">اي معلومة تحصل عليها من خارج المدينة مثال معلومة حصلت عليها من بث او دسكورد او مقطع باليوتيوب كلها تعتبر مخالفة</div></div></div>
                 </div>
                 <div class="accordion-item">
-                    <div class="accordion-header" onclick="toggleAccordion(this)"><div class="acc-title-box"><span class="acc-dot"></span><span class="acc-title">القتل العشوائي - RDM</span></div><span class="acc-icon">+</span></div>
+                    <div class="accordion-header" onclick="toggleAccordion(this)"><div class="acc-title-box"><span class="acc-dot"></span><span class="acc-title">الخوف على الحياة - RDM</span></div><span class="acc-icon">+</span></div>
                     <div class="accordion-content"><div class="accordion-inner"><div class="rule-text">قتل الأشخاص دون سبب, تهديد, بصورة عشوائية او بدون عداوة يعتبر القتل العشوائي ممنوع ومخالف للنظام العام للسيرفر.</div></div></div>
                 </div>
                 <div class="accordion-item">
@@ -423,7 +425,7 @@
                 <input type="text" id="selfName" class="gen-input" placeholder="الاسم الشخصي" autocomplete="off">
                 <input type="text" id="selfDiscord" class="gen-input" placeholder="حساب الديسكورد (Discord ID)" autocomplete="off">
                 <input type="number" id="selfAge" class="gen-input" placeholder="العمر" autocomplete="off">
-                <textarea id="selfExp" class="gen-input" placeholder="الخبرات والمهارات..." style="height: 80px; resize: none;"></textarea>
+                <textarea id="selfExp" class="gen-input" placeholder="خبراتك السابقة في العسكرية..." style="height: 80px; resize: none;"></textarea>
                 <textarea id="selfReason" class="gen-input" placeholder="لماذا يجب أن نختارك؟" style="height: 80px; resize: none;"></textarea>
                 <div class="file-input-wrapper">
                     <span id="self-file-name" class="file-label-text">إرفاق صورة (اختياري)</span>
@@ -480,6 +482,7 @@
         </header>
 
         <div id="dashboardView">
+            <img src="yyW7oBx.jpg" class="dashboard-top-logo" alt="شعار الشرطة">
             <div class="main-grid" id="modulesContainer"></div>
         </div>
 
@@ -594,7 +597,6 @@
         let currentLang = 'ar'; let currentModule = null;
         let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { policeOpen: true, selfOpen: true } };
 
-        // 🟢 فلتر التنظيف الأسطوري لمنع خراب الجداول 🟢
         function cleanArray(data) {
             if (!data) return [];
             if (Array.isArray(data)) return data.filter(item => item !== null && item !== undefined);
@@ -851,7 +853,6 @@
             users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (canManageAccounts && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
         }
 
-        // 🟢 شكل السجلات الجديد الأسطوري (مع العناوين والوقت) 🟢
         function renderRecords() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
             const arr = currentLang === 'ar' ? currentModule.inputsAr : currentModule.inputsEn;
@@ -859,7 +860,6 @@
             db[currentModule.id].forEach((rec, idx) => { 
                 const del = (canManageAccounts || isHighCommand) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})" style="margin-top:5px;" title="حذف"></i>` : ''; 
                 
-                // إذا كان السجل قديم (بدون تصميم) اعرضه زي ما هو، وإذا جديد بيطلع بالتصميم الفخم
                 let contentHTML = rec;
                 if(typeof rec === 'string' && rec.includes(' | ')) {
                      contentHTML = `<div style="color:#fff;">${rec}</div>`;
@@ -899,7 +899,6 @@
             });
         }
 
-        // 🟢 توليد التصميم الجديد مع الوقت والتاريخ عند الحفظ 🟢
         function addRecord() {
             if(currentModule.isAccountsForm) {
                 if(!canManageAccounts) return; 
@@ -976,7 +975,6 @@
                         reader.readAsDataURL(fileInput.files[0]);
                     } else { return showCustomAlert("تنبيه", "يرجى إرفاق صورة!"); }
                 } else { 
-                    // الأقسام العادية بدون صور (زي الصندوق الأسود)
                     let textHtml = '<div style="display:flex; flex-direction:column; gap:6px;">';
                     vals.forEach((v, i) => { 
                         let label = arr[i];
