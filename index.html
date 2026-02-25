@@ -30,6 +30,7 @@
             --font-en: 'Rajdhani', sans-serif;
         }
 
+        /* السماح بتحديد النصوص لسهولة النسخ */
         * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
         body { user-select: none; background: radial-gradient(circle at center, #0a1120 0%, #030509 100%); color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
@@ -515,7 +516,7 @@
     </div>
 
     <script>
-        // 🚨 تم ربط الداتا بيس بناءً على الكود اللي أرسلته لي 🚨
+        // 🚨 ربط قاعدة البيانات Firebase 🚨
         const firebaseConfig = {
             apiKey: "AIzaSyC5PL_fJEjiJVQS8rnx4m8j9uQNsILcQvs",
             authDomain: "police-depa.firebaseapp.com",
@@ -526,22 +527,20 @@
             appId: "1:821123753086:web:114d93838e23a6808b642f",
             measurementId: "G-ETS3VSYWHF"
         };
-        
-        // تشغيل الفايربيس
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // إعدادات النظام والرتب
+        // إعدادات النظام
         const configOfficers = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : ["Minister of Interior", "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"];
         const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Warrant Officer", "Sergeant Major", "Sergeant", "Corporal", "Officer", "Cadet"];
         const SystemRanks = [...configOfficers, ...configEnlisted];
         let myRankIdx = 99; let canManageAccounts = false;
 
-        // القاموس الكامل (حتى ما يطلع لك undefined)
+        // القاموس الكامل
         const i18n = {
             ar: {
                 login_title: "نظام إدارة الشرطة", login_ph_id: "اسم المستخدم", login_ph_pass: "كلمة المرور", login_btn: "تسجيل الدخول", login_err: "بيانات الدخول غير صحيحة", app_title: "إدارة الشرطة", btn_add: "إضافة / حفظ السجل", btn_back: "العودة للرئيسية",
-                m_app: "طلبات التقديم", m_rep: "التقارير", m_cry: "قسم التشفير", m_box: "الصندوق الأسود", m_sav: "التقارير المحفوظة", m_not: "ملاحظات القيادة", m_map: "خرائط العمليات", m_off: "إدارة الحسابات", m_wan: "المطلوبون", m_tsk: "المهام والنقاط", m_gng: "قسم العصابات", m_vid: "قسم الفيديو", m_arm: "مستودع الأسلحة",
+                m_set: "إعدادات التقديم", m_app: "طلبات التقديم", m_rep: "التقارير", m_cry: "قسم التشفير", m_box: "الصندوق الأسود", m_sav: "التقارير المحفوظة", m_not: "ملاحظات القيادة", m_map: "خرائط العمليات", m_off: "إدارة الحسابات", m_wan: "المطلوبون", m_tsk: "المهام والنقاط", m_gng: "قسم العصابات", m_vid: "قسم الفيديو", m_arm: "مستودع الأسلحة",
                 o_user: "اسم المستخدم", o_pass: "كلمة المرور", o_name: "الاسم الكامل", o_rank: "اختر الرتبة", o_err: "يرجى تعبئة جميع الحقول", o_exists: "موجود مسبقاً", o_no_perm: "لا تملك الصلاحية",
                 th_officer: "المسؤول", th_assignee: "المستلم", th_pts: "النقاط", th_reason: "المهمة الموكلة", th_status: "الحالة", th_act: "إجراء", st_pend: "قيد الانتظار", st_appr: "معتمدة ✔️",
                 v_title: "عنوان الفيديو", v_yt: "رابط يوتيوب", v_or: "أو ملف", r_name: "الاسم الكامل", r_badge: "البادج العسكري", r_crim: "نوع التقرير", r_det: "اكتب التقرير بالكامل هنا...",
@@ -549,7 +548,7 @@
             },
             en: {
                 login_title: "SYSTEM LOGIN", login_ph_id: "USERNAME", login_ph_pass: "PASSWORD", login_btn: "LOGIN", login_err: "INVALID CREDENTIALS", app_title: "POLICE DEPARTMENT", btn_add: "SUBMIT", btn_back: "BACK TO MAIN",
-                m_app: "Applications", m_rep: "Reports", m_cry: "Crypto Dept", m_box: "Black Box", m_sav: "Saved Reports", m_not: "Command Notes", m_map: "Ops Maps", m_off: "Accounts MGT", m_wan: "Wanted", m_tsk: "Tasks & Points", m_gng: "Gangs", m_vid: "Video Dept", m_arm: "Armory",
+                m_set: "App Settings", m_app: "Applications", m_rep: "Reports", m_cry: "Crypto Dept", m_box: "Black Box", m_sav: "Saved Reports", m_not: "Command Notes", m_map: "Ops Maps", m_off: "Accounts MGT", m_wan: "Wanted", m_tsk: "Tasks & Points", m_gng: "Gangs", m_vid: "Video Dept", m_arm: "Armory",
                 o_user: "User", o_pass: "Pass", o_name: "Name", o_rank: "Rank", o_err: "Fill fields", o_exists: "User exists", o_no_perm: "No permission",
                 th_officer: "Officer", th_assignee: "Assignee", th_pts: "Points", th_reason: "Task", th_status: "Status", th_act: "Act", st_pend: "Pending", st_appr: "Approved",
                 v_title: "Video Title", v_yt: "YT Link", v_or: "OR File", r_name: "Name", r_badge: "Badge", r_crim: "Report Type", r_det: "Type report here...",
@@ -557,7 +556,9 @@
             }
         };
 
+        // 🟢 إضافة قسم إعدادات التقديم في القائمة 🟢
         const modules = [
+            { id: 'settings', i18n_t: 'm_set', isSettingsView: true },
             { id: 'applications', i18n_t: 'm_app', isAppsView: true },
             { id: 'reports', i18n_t: 'm_rep', isReportForm: true },
             { id: 'crypto', i18n_t: 'm_cry', isCrypto: true },
@@ -574,15 +575,12 @@
         ];
 
         let currentLang = 'ar'; let currentModule = null;
-        
-        // المتغير الأساسي اللي بيحفظ كل الشغل
-        let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [] };
+        let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { applicationsOpen: true } };
 
-        // 🟢 سحب البيانات من الداتا بيس فوراً وتحديث الموقع 🟢
+        // تحديث حي للبيانات
         database.ref('lspd_db').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // نضمن إن كل المصفوفات موجودة حتى لو فاضية
                 db.applications = data.applications || [];
                 db.reports = data.reports || [];
                 db.tasks = data.tasks || [];
@@ -597,23 +595,19 @@
                 db.blackbox = data.blackbox || [];
                 db.crypto = data.crypto || [];
                 db.customUsers = data.customUsers || [];
+                db.settings = data.settings || { applicationsOpen: true };
             }
-            
-            // إذا كنت فاتح قسم معين، راح يتحدث قدامك بدون ما تسوي ريفريش!
             if (currentModule && document.getElementById('moduleView').style.display === 'flex') {
-                openMod(currentModule.id);
+                if(currentModule.id === 'settings') renderSettingsView();
+                else openMod(currentModule.id);
             }
         });
 
-        // 🟢 دالة حفظ كل شيء للفايربيس 🟢
         function saveDB() {
             database.ref('lspd_db').set(db);
         }
 
-        window.onload = () => { 
-            createStars();
-            applyLanguage(); 
-        };
+        window.onload = () => { createStars(); applyLanguage(); };
 
         function applyLanguage() {
             const t = i18n[currentLang];
@@ -628,9 +622,7 @@
             document.getElementById('loginError').innerText = t.login_err;
             document.getElementById('appTitleText').innerText = t.app_title;
             document.getElementById('btnBackText').innerText = t.btn_back;
-            
             if(document.getElementById('submitBtn')) document.getElementById('submitBtn').innerText = t.btn_add;
-            
             document.getElementById('crypTitleText').innerText = t.cryp_title;
             document.getElementById('cryIn').placeholder = t.cryp_ph;
             document.getElementById('crypBtnEncText').innerText = t.cryp_btn_enc;
@@ -645,7 +637,6 @@
         function login() {
             const u = document.getElementById('userInput').value.trim(); const p = document.getElementById('passInput').value.trim();
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; 
-            // يسحب المستخدمين من الكونفق + من الداتا بيس
             let allUsers = [...configU, ...(db.customUsers || [])];
             let foundUser = allUsers.find(x => x.user === u && x.pass === p);
             
@@ -685,7 +676,13 @@
             
             if(inputBlock) inputBlock.style.display = 'block';
 
-            if(currentModule.isAppsView) {
+            // 🟢 تشغيل قسم إعدادات التقديم (قفل/فتح) 🟢
+            if(currentModule.isSettingsView) {
+                dynamicArea.innerHTML = `<div id="settingsContainer"></div>`;
+                if(inputBlock) inputBlock.style.display = 'none'; 
+                renderSettingsView();
+            }
+            else if(currentModule.isAppsView) {
                 dynamicArea.innerHTML = `<div id="appsContainer"></div>`;
                 if(inputBlock) inputBlock.style.display = 'none'; 
                 renderApplications();
@@ -718,7 +715,35 @@
             }
         }
 
-        // --- عرض التقديمات (مع السماح بالنسخ وتكبير الصور) ---
+        // 🟢 برمجة قسم إعدادات التقديم (الفتح والإغلاق) 🟢
+        function renderSettingsView() {
+            const container = document.getElementById('settingsContainer');
+            if(!container) return;
+            
+            let isOpen = db.settings ? db.settings.applicationsOpen : true;
+            let statusText = isOpen ? '<span style="color:var(--green)">مفتوح 🟢</span>' : '<span style="color:var(--red)">مغلق 🔴</span>';
+            let toggleBtn = isHighCommand ? `<button class="submit-btn" onclick="toggleAppStatus()" style="width:250px; margin: 20px auto; display:block; cursor:pointer;">تغيير حالة التقديم</button>` : `<div style="color:var(--yellow); margin-top:20px;">لا تملك صلاحية لتغيير الحالة</div>`;
+
+            container.innerHTML = `
+                <div style="background:rgba(20,26,40,0.6); border:1px solid var(--btn-border); border-radius:8px; padding:40px; text-align:center; margin-top: 30px; backdrop-filter: blur(5px);">
+                    <h3 style="color:var(--cyan); margin-bottom:20px; font-size:1.8rem;">التحكم بطلبات التقديم</h3>
+                    <div style="font-size: 1.5rem; margin-bottom: 20px; color: #fff;">
+                        التقديم للوظائف حالياً: ${statusText}
+                    </div>
+                    ${toggleBtn}
+                </div>
+            `;
+        }
+
+        function toggleAppStatus() {
+            if(!isHighCommand) return;
+            if(!db.settings) db.settings = { applicationsOpen: true };
+            db.settings.applicationsOpen = !db.settings.applicationsOpen;
+            saveDB();
+            let msg = db.settings.applicationsOpen ? "تم فتح باب التقديمات بنجاح!" : "تم إغلاق باب التقديمات بنجاح!";
+            showCustomAlert("نجاح", msg);
+        }
+
         function renderApplications() {
             const container = document.getElementById('appsContainer'); if(!container) return; container.innerHTML = '';
             if(!db.applications || db.applications.length === 0) { container.innerHTML = `<div style="text-align:center; color:#888; padding:30px; font-size:1.1rem;">لا توجد طلبات تقديم حالياً.</div>`; return; }
@@ -751,7 +776,7 @@
                 }
 
                 container.innerHTML += `
-                <div class="allow-select" style="background:rgba(20,26,40,0.6); border:1px solid var(--btn-border); border-radius:8px; padding:20px; margin-bottom:15px; position:relative; text-align:right;">
+                <div class="allow-select" style="background:rgba(20,26,40,0.6); border:1px solid var(--btn-border); border-radius:8px; padding:20px; margin-bottom:15px; position:relative; text-align:right; backdrop-filter: blur(5px);">
                     ${delBtn}
                     <h3 style="color:var(--cyan); margin-bottom:5px; font-size:1.4rem;">${app.name} <span style="font-size:0.9rem; color:#888;">(العمر: ${app.age})</span></h3>
                     <div style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">${appTypeTitle}</div>
@@ -767,7 +792,6 @@
             });
         }
 
-        // تحديث الحفظ ليرسل للفايربيس بدال التخزين المحلي
         function updateAppStatus(idx, newStatus) { if(!db.applications[idx]) return; db.applications[idx].status = newStatus; saveDB(); }
         function deleteApp(idx) { if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); saveDB(); } }
 
@@ -775,7 +799,6 @@
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
             configU.forEach((u) => { let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
-            
             let users = db.customUsers || [];
             users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (canManageAccounts && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
         }
@@ -829,9 +852,51 @@
             document.getElementById('customAlertOverlay').style.display = 'flex';
         }
 
+        // 🟢 دوال فتح التقديم (مربوطة بحالة الإعدادات) 🟢
+        function openAppModal() { 
+            if(db.settings && db.settings.applicationsOpen === false) { showCustomAlert("عذراً", "التقديم مغلق حالياً من قبل الإدارة."); return; }
+            document.getElementById('appModal').style.display = 'flex'; 
+        }
+        function closeAppModal() { document.getElementById('appModal').style.display = 'none'; }
+        
+        function openSelfAppModal() { 
+            if(db.settings && db.settings.applicationsOpen === false) { showCustomAlert("عذراً", "التقديم مغلق حالياً من قبل الإدارة."); return; }
+            document.getElementById('selfAppModal').style.display = 'flex'; 
+        }
+        function closeSelfAppModal() { document.getElementById('selfAppModal').style.display = 'none'; document.getElementById('self-file-name').innerText = 'إرفاق صورة (CV، شهادات...)'; document.getElementById('self-file-name').style.color = '#888'; }
+
+        function submitApplication() {
+            const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim();
+            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
+            db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' });
+            saveDB(); closeAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.");
+            ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); 
+        }
+
+        function submitSelfApplication() {
+            const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim();
+            const fileInput = document.getElementById('selfFile');
+            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
+
+            let fileData = null;
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fileData = { name: fileInput.files[0].name, data: e.target.result };
+                    saveSelfApp(n, d, a, exp, reason, fileData);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else { saveSelfApp(n, d, a, exp, reason, null); }
+        }
+
+        function saveSelfApp(n, d, a, exp, reason, fileData) {
+            db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' });
+            saveDB(); closeSelfAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.");
+            ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = ''); document.getElementById('selfFile').value = '';
+        }
+
         function switchPublicTab(tabId, el) {
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            if(el) el.classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active')); if(el) el.classList.add('active');
             if (tabId === 'home' && document.getElementById('homeTab').style.display === 'flex') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
             document.getElementById('homeTab').style.display = 'none'; document.getElementById('rulesTab').style.display = 'none'; document.getElementById('jobsTab').style.display = 'none'; document.getElementById('foundersTab').style.display = 'none';
             document.getElementById(tabId + 'Tab').style.display = 'flex'; window.scrollTo({ top: 0, behavior: 'auto' });
@@ -843,57 +908,10 @@
             if (!isActive) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; element.querySelector('.acc-icon').innerText = '-'; }
         }
 
-        function openAppModal() { document.getElementById('appModal').style.display = 'flex'; }
-        function closeAppModal() { document.getElementById('appModal').style.display = 'none'; }
-        function openSelfAppModal() { document.getElementById('selfAppModal').style.display = 'flex'; }
-        function closeSelfAppModal() { document.getElementById('selfAppModal').style.display = 'none'; document.getElementById('self-file-name').innerText = 'إرفاق صورة (CV، شهادات...)'; document.getElementById('self-file-name').style.color = '#888'; }
-
-        function submitApplication() {
-            const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim();
-            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
-            
-            db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' });
-            saveDB();
-            
-            closeAppModal();
-            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.");
-            ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); 
-        }
-
-        function submitSelfApplication() {
-            const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim();
-            const fileInput = document.getElementById('selfFile');
-            
-            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
-
-            let fileData = null;
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    fileData = { name: fileInput.files[0].name, data: e.target.result };
-                    saveSelfApp(n, d, a, exp, reason, fileData);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                saveSelfApp(n, d, a, exp, reason, null);
-            }
-        }
-
-        function saveSelfApp(n, d, a, exp, reason, fileData) {
-            db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' });
-            saveDB();
-            
-            closeSelfAppModal();
-            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.");
-            ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('selfFile').value = '';
-        }
-
         function openLoginScreen() { document.getElementById('publicSite').style.opacity = '0'; setTimeout(() => { document.getElementById('publicSite').style.display = 'none'; const login = document.getElementById('loginScreen'); login.style.display = 'flex'; setTimeout(() => login.style.opacity = '1', 50); }, 500); }
         function closeLoginScreen() { const login = document.getElementById('loginScreen'); login.style.opacity = '0'; setTimeout(() => { login.style.display = 'none'; document.getElementById('publicSite').style.display = 'flex'; setTimeout(() => document.getElementById('publicSite').style.opacity = '1', 50); }, 500); }
         function openImgZoom(src) { document.getElementById('zoomedImg').src = src; document.getElementById('imgZoomOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('imgZoomOverlay').classList.add('active'), 10); }
         function closeImgZoom() { document.getElementById('imgZoomOverlay').classList.remove('active'); setTimeout(() => document.getElementById('imgZoomOverlay').style.display = 'none', 300); }
-
         function doCrypto(type) { const v = document.getElementById('cryIn').value, out = document.getElementById('cryOut'); if(!v) return; try { out.innerText = (type === 'enc') ? btoa(unescape(encodeURIComponent(v))) : decodeURIComponent(escape(atob(v))); } catch(e) { out.innerText = "Error"; } }
         function copyCrypto() { navigator.clipboard.writeText(document.getElementById('cryOut').innerText); }
     </script>
