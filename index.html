@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --bg-deep: #030509;
@@ -27,50 +30,29 @@
             --font-en: 'Rajdhani', sans-serif;
         }
 
-        /* 🟢 تم إزالة منع التحديد (user-select: none) ليسمح لك بنسخ أي شيء 🟢 */
         * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
-
-        body {
-            background: radial-gradient(circle at center, #0a1120 0%, #030509 100%);
-            color: var(--text-main); font-family: var(--font-ar);
-            min-height: 100vh; display: flex; flex-direction: column; position: relative;
-            overflow-y: auto; overflow-x: hidden;
-        }
+        body { user-select: none; background: radial-gradient(circle at center, #0a1120 0%, #030509 100%); color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
+        input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
         /* خلفية النجوم الاحترافية */
-        #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;}
+        #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); }
         @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
 
-        .central-logo-bg {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 450px; height: 450px; z-index: -1; opacity: 0.04; pointer-events: none;
-            background-image: url('yyW7oBx.jpg'); background-size: cover; background-position: center;
-            border-radius: 50%; clip-path: circle(47% at 50% 50%);
-        }
+        .central-logo-bg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 450px; z-index: -1; opacity: 0.04; pointer-events: none; background-image: url('yyW7oBx.jpg'); background-size: cover; background-position: center; border-radius: 50%; clip-path: circle(47% at 50% 50%); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
-        /* ========================================= */
-        /* --- واجهة تكبير الصور الفخمة --- */
-        /* ========================================= */
+        /* نافذة تكبير الصور */
         #imgZoomOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999999; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; cursor: zoom-out; backdrop-filter: blur(5px); }
         #imgZoomOverlay.active { opacity: 1; }
         #zoomedImg { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,234,255,0.4); border: 2px solid var(--cyan); transform: scale(0.8); transition: transform 0.3s ease; }
         #imgZoomOverlay.active #zoomedImg { transform: scale(1); }
 
-        /* ========================================= */
-        /* --- واجهة الموقع العامة --- */
-        /* ========================================= */
         #publicSite { display: flex; flex-direction: column; width: 100%; min-height: 100vh; }
-        
-        .public-nav {
-            display: flex; justify-content: space-between; align-items: center; padding: 20px 80px;
-            background: rgba(3, 5, 9, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05);
-            position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(15px);
-        }
+        .public-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 80px; background: rgba(3, 5, 9, 0.95); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(15px); }
         .nav-right { display: flex; align-items: center; gap: 40px; }
         .nav-logo { width: 45px; height: 45px; background: url('yyW7oBx.jpg') center/cover; border-radius: 50%; box-shadow: 0 0 10px rgba(0,234,255,0.3); border: 1px solid var(--cyan);}
         .nav-links { display: flex; gap: 30px; }
@@ -78,8 +60,6 @@
         .nav-links a:hover, .nav-links a.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
         .nav-left button { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); padding: 10px 25px; border-radius: 4px; font-family: var(--font-ar); font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; user-select: none; }
         .nav-left button:hover { background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan-glow); }
-
-        .public-section { scroll-margin-top: 85px; }
 
         #homeTab { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.5s ease; }
         #rulesTab, #jobsTab, #foundersTab { display: none; flex-direction: column; align-items: center; width: 100%; background: transparent; padding-bottom: 100px; animation: fadeIn 0.5s ease;}
@@ -99,7 +79,6 @@
         .community-section { width: 100%; padding: 80px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
         .community-title { font-size: 3rem; color: #fff; font-weight: 800; margin-bottom: 20px; }
         .community-desc { color: #8da2b5; font-size: 1.15rem; line-height: 1.8; max-width: 800px; margin: 0 auto 60px auto; }
-        
         .community-cards { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
         .comm-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px; padding: 40px 30px; width: 350px; text-align: center; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
         .comm-card:hover { border-color: rgba(0,234,255,0.3); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,234,255,0.05); }
@@ -156,9 +135,7 @@
         .founder-rank { color: var(--cyan); font-size: 1.1rem; font-weight: bold; font-family: var(--font-en); letter-spacing: 1px; margin-bottom: 20px; }
         .founder-desc { color: #aaa; font-size: 0.95rem; line-height: 1.7; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
 
-        /* ========================================= */
-        /* --- النوافذ المنبثقة --- */
-        /* ========================================= */
+        /* النوافذ المنبثقة */
         .modal-overlay { position: fixed; inset: 0; background: rgba(3, 5, 9, 0.95); z-index: 10005; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .modal-box { width: 650px; padding: 40px; background: rgba(10, 15, 25, 0.98); border: 1px solid var(--cyan); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,234,255,0.1); animation: popIn 0.3s ease-out; }
         
@@ -181,10 +158,7 @@
         .back-login-btn { background: transparent; border: none; color: #888; margin-top: 20px; cursor: pointer; font-family: var(--font-ar); text-decoration: underline; font-size: 0.95rem; transition: 0.3s; user-select: none;}
         .back-login-btn:hover { color: #fff; }
 
-        /* ========================================= */
-        /* --- لوحة تحكم الشرطة (الداخلية) + إصلاح السكرول والنجوم --- */
-        /* ========================================= */
-        /* 🟢 تم جعل الخلفية شفافة لتظهر النجوم خلف لوحة التحكم 🟢 */
+        /* لوحة التحكم */
         #mainWrapper { display: none; flex: 1; flex-direction: column; transition: opacity 0.5s ease; height: 100vh; position: fixed; inset: 0; overflow: hidden; background: transparent;}
         header { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; z-index: 10; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; background: rgba(3,5,9,0.8); backdrop-filter: blur(10px);}
         .header-side { display: flex; gap: 10px; align-items: center; }
@@ -203,11 +177,7 @@
         .btn-rej:hover { background: var(--red); color: #fff; box-shadow: 0 0 15px rgba(255,51,51,0.4); }
         .badge-status { padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; border: 1px solid; }
 
-        #moduleView { 
-            display: none; flex: 1; flex-direction: column; width: 85%; max-width: 1100px; margin: 0 auto; 
-            max-height: calc(100vh - 100px); 
-            padding-bottom: 20px; animation: slideUpFade 0.4s ease; 
-        }
+        #moduleView { display: none; flex: 1; flex-direction: column; width: 85%; max-width: 1100px; margin: 0 auto; max-height: calc(100vh - 100px); padding-bottom: 20px; animation: slideUpFade 0.4s ease; }
         .module-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-top: 20px; margin-bottom: 20px; flex-direction: row-reverse; }
         .module-title { font-size: 1.5rem; color: var(--cyan); font-weight: bold; margin: 0; }
         .back-btn { background: rgba(10, 15, 25, 0.6); border: 1px solid var(--btn-border); color: #ccc; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-size: 0.95rem; font-family: var(--font-ar); font-weight:bold; backdrop-filter: blur(5px); user-select: none;}
@@ -454,7 +424,7 @@
                 <textarea id="selfExp" class="gen-input" placeholder="الخبرات والمهارات..." style="height: 80px; resize: none;"></textarea>
                 <textarea id="selfReason" class="gen-input" placeholder="لماذا يجب أن نختارك؟" style="height: 80px; resize: none;"></textarea>
                 <div class="file-input-wrapper">
-                    <span id="self-file-name" class="file-label-text">إرفاق صورة (CV، شهادات...)</span>
+                    <span id="self-file-name" class="file-label-text">إرفاق صورة (اختياري)</span>
                     <input type="file" id="selfFile" accept="image/*" onchange="document.getElementById('self-file-name').innerText = this.files[0].name; document.getElementById('self-file-name').style.color = '#00eaff';">
                 </div>
             </div>
@@ -536,7 +506,7 @@
                     <button class="submit-btn" onclick="doCrypto('dec')" style="margin:0; background:#fff; color:#000;" id="crypBtnDecText">فك تشفير</button>
                 </div>
                 <div style="position:relative;">
-                    <div class="crypto-res" id="cryOut"></div>
+                    <div class="crypto-res allow-select" id="cryOut"></div>
                     <i class="fa-solid fa-copy" onclick="copyCrypto()" style="position: absolute; top: 50%; transform: translateY(-50%); left: 20px; color: var(--cyan); font-size: 1.3rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--cyan)'"></i>
                 </div>
             </div>
@@ -545,142 +515,29 @@
     </div>
 
     <script>
-        // 🚨 ضع رابط الديسكورد ويب هوك حقك هنا عشان يوصلك التقديم بالديسكورد 🚨
-        const DISCORD_WEBHOOK_URL = ""; 
+        // 🚨 تم ربط الداتا بيس بناءً على الكود اللي أرسلته لي 🚨
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5PL_fJEjiJVQS8rnx4m8j9uQNsILcQvs",
+            authDomain: "police-depa.firebaseapp.com",
+            databaseURL: "https://police-depa-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "police-depa",
+            storageBucket: "police-depa.firebasestorage.app",
+            messagingSenderId: "821123753086",
+            appId: "1:821123753086:web:114d93838e23a6808b642f",
+            measurementId: "G-ETS3VSYWHF"
+        };
+        
+        // تشغيل الفايربيس
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        // دالة إرسال للديسكورد (عشان يجيك التقديم من أي شخص بالعالم)
-        function sendToDiscord(type, name, discord, age, exp, reason) {
-            if(!DISCORD_WEBHOOK_URL) return;
-            
-            let embedColor = type === 'police' ? 3447003 : 16753920; // أزرق للشرطة، برتقالي لنفسك
-            let embedTitle = type === 'police' ? "👮 تقديم شرطة جديد" : "📝 تقديم 'قدم نفسك' جديد";
-
-            let payload = {
-                username: "نظام التقديمات - تايتنز",
-                avatar_url: "https://i.imgur.com/yyW7oBx.jpg",
-                embeds: [{
-                    title: embedTitle,
-                    color: embedColor,
-                    fields: [
-                        { name: "👤 الاسم", value: name, inline: true },
-                        { name: "🎮 الديسكورد", value: discord, inline: true },
-                        { name: "📅 العمر", value: age, inline: true },
-                        { name: "📚 الخبرات/المهارات", value: exp || "لا يوجد" },
-                        { name: "❓ السبب", value: reason || "لا يوجد" }
-                    ],
-                    footer: { text: "تاريخ التقديم: " + new Date().toLocaleDateString() }
-                }]
-            };
-
-            fetch(DISCORD_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).catch(err => console.error("Error sending to Discord:", err));
-        }
-
-        // توليد النجوم في الخلفية
-        function createStars() {
-            const starBg = document.getElementById('star-bg');
-            starBg.innerHTML = '';
-            for (let i = 0; i < 150; i++) {
-                let star = document.createElement('div');
-                star.className = 'star';
-                let size = Math.random() * 3 + 1; 
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
-                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                star.style.animationDelay = (Math.random() * 5) + 's';
-                starBg.appendChild(star);
-            }
-        }
-
-        function showCustomAlert(title, message) {
-            document.getElementById('alertTitle').innerText = title;
-            document.getElementById('alertMessage').innerText = message;
-            document.getElementById('customAlertOverlay').style.display = 'flex';
-        }
-
-        function switchPublicTab(tabId, el) {
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            if(el) el.classList.add('active');
-            if (tabId === 'home' && document.getElementById('homeTab').style.display === 'flex') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-            document.getElementById('homeTab').style.display = 'none'; document.getElementById('rulesTab').style.display = 'none'; document.getElementById('jobsTab').style.display = 'none'; document.getElementById('foundersTab').style.display = 'none';
-            document.getElementById(tabId + 'Tab').style.display = 'flex'; window.scrollTo({ top: 0, behavior: 'auto' });
-        }
-
-        function toggleAccordion(element) {
-            const item = element.parentElement; const content = item.querySelector('.accordion-content'); const isActive = item.classList.contains('active');
-            document.querySelectorAll('.accordion-item').forEach(otherItem => { otherItem.classList.remove('active'); otherItem.querySelector('.accordion-content').style.maxHeight = null; otherItem.querySelector('.acc-icon').innerText = '+'; });
-            if (!isActive) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; element.querySelector('.acc-icon').innerText = '-'; }
-        }
-
-        function openAppModal() { document.getElementById('appModal').style.display = 'flex'; }
-        function closeAppModal() { document.getElementById('appModal').style.display = 'none'; }
-        function openSelfAppModal() { document.getElementById('selfAppModal').style.display = 'flex'; }
-        function closeSelfAppModal() { document.getElementById('selfAppModal').style.display = 'none'; document.getElementById('self-file-name').innerText = 'إرفاق صورة (CV، شهادات...)'; document.getElementById('self-file-name').style.color = '#888'; }
-
-        function submitApplication() {
-            const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim();
-            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
-            
-            // حفظ محلي للداشبورد
-            db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' });
-            localStorage.setItem('lspd_applications', JSON.stringify(db.applications));
-            
-            // إرسال لديسكورد
-            sendToDiscord('police', n, d, a, exp, reason);
-            
-            closeAppModal();
-            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.");
-            ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); 
-        }
-
-        function submitSelfApplication() {
-            const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim();
-            const fileInput = document.getElementById('selfFile');
-            
-            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
-
-            let fileData = null;
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    fileData = { name: fileInput.files[0].name, data: e.target.result };
-                    saveSelfApp(n, d, a, exp, reason, fileData);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                saveSelfApp(n, d, a, exp, reason, null);
-            }
-        }
-
-        function saveSelfApp(n, d, a, exp, reason, fileData) {
-            // حفظ محلي
-            db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' });
-            localStorage.setItem('lspd_applications', JSON.stringify(db.applications));
-            
-            // إرسال لديسكورد
-            sendToDiscord('self', n, d, a, exp, reason);
-            
-            closeSelfAppModal();
-            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.");
-            ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('selfFile').value = '';
-        }
-
-        function openLoginScreen() { document.getElementById('publicSite').style.opacity = '0'; setTimeout(() => { document.getElementById('publicSite').style.display = 'none'; const login = document.getElementById('loginScreen'); login.style.display = 'flex'; setTimeout(() => login.style.opacity = '1', 50); }, 500); }
-        function closeLoginScreen() { const login = document.getElementById('loginScreen'); login.style.opacity = '0'; setTimeout(() => { login.style.display = 'none'; document.getElementById('publicSite').style.display = 'flex'; setTimeout(() => document.getElementById('publicSite').style.opacity = '1', 50); }, 500); }
-        function openImgZoom(src) { document.getElementById('zoomedImg').src = src; document.getElementById('imgZoomOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('imgZoomOverlay').classList.add('active'), 10); }
-        function closeImgZoom() { document.getElementById('imgZoomOverlay').classList.remove('active'); setTimeout(() => document.getElementById('imgZoomOverlay').style.display = 'none', 300); }
-
+        // إعدادات النظام والرتب
         const configOfficers = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : ["Minister of Interior", "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"];
         const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Warrant Officer", "Sergeant Major", "Sergeant", "Corporal", "Officer", "Cadet"];
         const SystemRanks = [...configOfficers, ...configEnlisted];
         let myRankIdx = 99; let canManageAccounts = false;
 
+        // القاموس الكامل (حتى ما يطلع لك undefined)
         const i18n = {
             ar: {
                 login_title: "نظام إدارة الشرطة", login_ph_id: "اسم المستخدم", login_ph_pass: "كلمة المرور", login_btn: "تسجيل الدخول", login_err: "بيانات الدخول غير صحيحة", app_title: "إدارة الشرطة", btn_add: "إضافة / حفظ السجل", btn_back: "العودة للرئيسية",
@@ -716,12 +573,45 @@
             { id: 'gangs', i18n_t: 'm_gng', inputsAr: ['الاسم', 'النشاط'], inputsEn: ['Name', 'Activity'] }
         ];
 
-        let currentLang = 'ar'; let isOfficer = false; let isHighCommand = false; let currentModule = null;
-        let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [] };
+        let currentLang = 'ar'; let currentModule = null;
+        
+        // المتغير الأساسي اللي بيحفظ كل الشغل
+        let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [] };
+
+        // 🟢 سحب البيانات من الداتا بيس فوراً وتحديث الموقع 🟢
+        database.ref('lspd_db').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // نضمن إن كل المصفوفات موجودة حتى لو فاضية
+                db.applications = data.applications || [];
+                db.reports = data.reports || [];
+                db.tasks = data.tasks || [];
+                db.wanted = data.wanted || [];
+                db.maps = data.maps || [];
+                db.officials = data.officials || [];
+                db.video = data.video || [];
+                db.gangs = data.gangs || [];
+                db.armory = data.armory || [];
+                db.notes = data.notes || [];
+                db.saved = data.saved || [];
+                db.blackbox = data.blackbox || [];
+                db.crypto = data.crypto || [];
+                db.customUsers = data.customUsers || [];
+            }
+            
+            // إذا كنت فاتح قسم معين، راح يتحدث قدامك بدون ما تسوي ريفريش!
+            if (currentModule && document.getElementById('moduleView').style.display === 'flex') {
+                openMod(currentModule.id);
+            }
+        });
+
+        // 🟢 دالة حفظ كل شيء للفايربيس 🟢
+        function saveDB() {
+            database.ref('lspd_db').set(db);
+        }
 
         window.onload = () => { 
             createStars();
-            try { let savedApps = JSON.parse(localStorage.getItem('lspd_applications')); if(Array.isArray(savedApps)) db.applications = savedApps; } catch(e) { db.applications = []; }
             applyLanguage(); 
         };
 
@@ -754,7 +644,9 @@
 
         function login() {
             const u = document.getElementById('userInput').value.trim(); const p = document.getElementById('passInput').value.trim();
-            let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; let localUsers = JSON.parse(localStorage.getItem('lspd_sys_users')) || []; let allUsers = [...configU, ...localUsers];
+            let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; 
+            // يسحب المستخدمين من الكونفق + من الداتا بيس
+            let allUsers = [...configU, ...(db.customUsers || [])];
             let foundUser = allUsers.find(x => x.user === u && x.pass === p);
             
             if(foundUser) {
@@ -826,7 +718,7 @@
             }
         }
 
-        // --- عرض الصورة في التقديم قابلة للتكبير + النصوص قابلة للنسخ ---
+        // --- عرض التقديمات (مع السماح بالنسخ وتكبير الصور) ---
         function renderApplications() {
             const container = document.getElementById('appsContainer'); if(!container) return; container.innerHTML = '';
             if(!db.applications || db.applications.length === 0) { container.innerHTML = `<div style="text-align:center; color:#888; padding:30px; font-size:1.1rem;">لا توجد طلبات تقديم حالياً.</div>`; return; }
@@ -875,14 +767,16 @@
             });
         }
 
-        function updateAppStatus(idx, newStatus) { if(!db.applications[idx]) return; db.applications[idx].status = newStatus; localStorage.setItem('lspd_applications', JSON.stringify(db.applications)); renderApplications(); }
-        function deleteApp(idx) { if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); localStorage.setItem('lspd_applications', JSON.stringify(db.applications)); renderApplications(); } }
+        // تحديث الحفظ ليرسل للفايربيس بدال التخزين المحلي
+        function updateAppStatus(idx, newStatus) { if(!db.applications[idx]) return; db.applications[idx].status = newStatus; saveDB(); }
+        function deleteApp(idx) { if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); saveDB(); } }
 
         function renderAccounts() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
             configU.forEach((u) => { let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
-            let users = JSON.parse(localStorage.getItem('lspd_sys_users')) || [];
+            
+            let users = db.customUsers || [];
             users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (canManageAccounts && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
         }
 
@@ -896,19 +790,110 @@
                 if(!canManageAccounts) return; 
                 const u = document.getElementById('o-user').value.trim(), p = document.getElementById('o-pass').value.trim(), n = document.getElementById('o-name').value.trim(), r = document.getElementById('o-rank').value;
                 if(!u || !p || !n || !r) { showCustomAlert("تنبيه", i18n[currentLang]['o_err']); return; }
-                let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; let localUsers = JSON.parse(localStorage.getItem('lspd_sys_users')) || []; if(configU.some(x => x.user === u) || localUsers.some(x => x.user === u)) { showCustomAlert("تنبيه", i18n[currentLang]['o_exists']); return; }
-                localUsers.push({ user: u, pass: p, name: n, rank: r }); localStorage.setItem('lspd_sys_users', JSON.stringify(localUsers)); showCustomAlert("نجاح", "تم إضافة الحساب بنجاح!"); ['o-user','o-pass','o-name','o-rank'].forEach(id => document.getElementById(id).value = ''); renderAccounts(); 
+                let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; db.customUsers = db.customUsers || []; if(configU.some(x => x.user === u) || db.customUsers.some(x => x.user === u)) { showCustomAlert("تنبيه", i18n[currentLang]['o_exists']); return; }
+                db.customUsers.push({ user: u, pass: p, name: n, rank: r }); saveDB(); showCustomAlert("نجاح", "تم إضافة الحساب بنجاح!"); ['o-user','o-pass','o-name','o-rank'].forEach(id => document.getElementById(id).value = ''); 
             } else {
                 let vals = [], empty = false; const arr = currentLang === 'ar' ? currentModule.inputsAr : currentModule.inputsEn; arr.forEach((_, i) => { const v = document.getElementById(`inp-${i}`).value; if(!v) empty = true; vals.push(v); }); if(empty) return;
                 if(currentModule.hasImage) {
                     const fileInput = document.getElementById('inp-image'); if(!fileInput.files || !fileInput.files[0]) return; const reader = new FileReader();
-                    reader.onload = function(e) { let textHtml = ''; vals.forEach((v, i) => { if(i === 0) textHtml += `<div style="font-weight:800; font-size:1.1rem; color:var(--cyan); margin-bottom:5px;">${v}</div>`; else textHtml += `<div style="font-size:0.85rem; color:#bbb; margin-bottom:2px;">• ${v}</div>`; }); const imgHtml = `<img src="${e.target.result}" class="clickable-img" style="width:70px; height:70px; object-fit:cover; border-radius:4px; border: 1px solid rgba(255,255,255,0.1);" onclick="openImgZoom('${e.target.result}')">`; db[currentModule.id].push(`<div style="display:flex; align-items:flex-start; padding:5px;">${imgHtml} <div style="margin-inline-start:15px; flex:1; display:flex; flex-direction:column; justify-content:center;">${textHtml}</div></div>`); arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); fileInput.value = ''; document.getElementById('img-file-name').innerText = 'إرفاق صورة'; document.getElementById('img-file-name').style.color = '#666'; renderRecords(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); }; reader.readAsDataURL(fileInput.files[0]);
-                } else { db[currentModule.id].push(vals.join(' | ')); arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); renderRecords(); showCustomAlert("نجاح", "تمت الإضافة بنجاح");}
+                    reader.onload = function(e) { let textHtml = ''; vals.forEach((v, i) => { if(i === 0) textHtml += `<div style="font-weight:800; font-size:1.1rem; color:var(--cyan); margin-bottom:5px;">${v}</div>`; else textHtml += `<div style="font-size:0.85rem; color:#bbb; margin-bottom:2px;">• ${v}</div>`; }); const imgHtml = `<img src="${e.target.result}" class="clickable-img" style="width:70px; height:70px; object-fit:cover; border-radius:4px; border: 1px solid rgba(255,255,255,0.1);" onclick="openImgZoom('${e.target.result}')">`; db[currentModule.id].push(`<div style="display:flex; align-items:flex-start; padding:5px;">${imgHtml} <div style="margin-inline-start:15px; flex:1; display:flex; flex-direction:column; justify-content:center;">${textHtml}</div></div>`); arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); fileInput.value = ''; document.getElementById('img-file-name').innerText = 'إرفاق صورة'; document.getElementById('img-file-name').style.color = '#666'; saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); }; reader.readAsDataURL(fileInput.files[0]);
+                } else { db[currentModule.id].push(vals.join(' | ')); arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح");}
             }
         }
-        function delAccount(idx) { let users = JSON.parse(localStorage.getItem('lspd_sys_users')) || []; users.splice(idx, 1); localStorage.setItem('lspd_sys_users', JSON.stringify(users)); renderAccounts(); }
-        function delRec(idx) { db[currentModule.id].splice(idx, 1); if(currentModule.isVideo) renderVideoGrid(); else if(currentModule.isTable) renderTasksTable(); else renderRecords(); }
-        function approveTask(idx) { if(!isHighCommand) return; db['tasks'][idx].approved = true; renderTasksTable(); }
+        
+        function delAccount(idx) { db.customUsers.splice(idx, 1); saveDB(); }
+        function delRec(idx) { db[currentModule.id].splice(idx, 1); saveDB(); }
+        function approveTask(idx) { if(!isHighCommand) return; db['tasks'][idx].approved = true; saveDB(); }
+
+        // توليد النجوم في الخلفية
+        function createStars() {
+            const starBg = document.getElementById('star-bg');
+            starBg.innerHTML = '';
+            for (let i = 0; i < 150; i++) {
+                let star = document.createElement('div');
+                star.className = 'star';
+                let size = Math.random() * 3 + 1; 
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = (Math.random() * 5) + 's';
+                starBg.appendChild(star);
+            }
+        }
+
+        function showCustomAlert(title, message) {
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMessage').innerText = message;
+            document.getElementById('customAlertOverlay').style.display = 'flex';
+        }
+
+        function switchPublicTab(tabId, el) {
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            if(el) el.classList.add('active');
+            if (tabId === 'home' && document.getElementById('homeTab').style.display === 'flex') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+            document.getElementById('homeTab').style.display = 'none'; document.getElementById('rulesTab').style.display = 'none'; document.getElementById('jobsTab').style.display = 'none'; document.getElementById('foundersTab').style.display = 'none';
+            document.getElementById(tabId + 'Tab').style.display = 'flex'; window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+
+        function toggleAccordion(element) {
+            const item = element.parentElement; const content = item.querySelector('.accordion-content'); const isActive = item.classList.contains('active');
+            document.querySelectorAll('.accordion-item').forEach(otherItem => { otherItem.classList.remove('active'); otherItem.querySelector('.accordion-content').style.maxHeight = null; otherItem.querySelector('.acc-icon').innerText = '+'; });
+            if (!isActive) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; element.querySelector('.acc-icon').innerText = '-'; }
+        }
+
+        function openAppModal() { document.getElementById('appModal').style.display = 'flex'; }
+        function closeAppModal() { document.getElementById('appModal').style.display = 'none'; }
+        function openSelfAppModal() { document.getElementById('selfAppModal').style.display = 'flex'; }
+        function closeSelfAppModal() { document.getElementById('selfAppModal').style.display = 'none'; document.getElementById('self-file-name').innerText = 'إرفاق صورة (CV، شهادات...)'; document.getElementById('self-file-name').style.color = '#888'; }
+
+        function submitApplication() {
+            const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim();
+            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
+            
+            db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' });
+            saveDB();
+            
+            closeAppModal();
+            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.");
+            ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); 
+        }
+
+        function submitSelfApplication() {
+            const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim();
+            const fileInput = document.getElementById('selfFile');
+            
+            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!"); return; }
+
+            let fileData = null;
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fileData = { name: fileInput.files[0].name, data: e.target.result };
+                    saveSelfApp(n, d, a, exp, reason, fileData);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveSelfApp(n, d, a, exp, reason, null);
+            }
+        }
+
+        function saveSelfApp(n, d, a, exp, reason, fileData) {
+            db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' });
+            saveDB();
+            
+            closeSelfAppModal();
+            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.");
+            ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('selfFile').value = '';
+        }
+
+        function openLoginScreen() { document.getElementById('publicSite').style.opacity = '0'; setTimeout(() => { document.getElementById('publicSite').style.display = 'none'; const login = document.getElementById('loginScreen'); login.style.display = 'flex'; setTimeout(() => login.style.opacity = '1', 50); }, 500); }
+        function closeLoginScreen() { const login = document.getElementById('loginScreen'); login.style.opacity = '0'; setTimeout(() => { login.style.display = 'none'; document.getElementById('publicSite').style.display = 'flex'; setTimeout(() => document.getElementById('publicSite').style.opacity = '1', 50); }, 500); }
+        function openImgZoom(src) { document.getElementById('zoomedImg').src = src; document.getElementById('imgZoomOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('imgZoomOverlay').classList.add('active'), 10); }
+        function closeImgZoom() { document.getElementById('imgZoomOverlay').classList.remove('active'); setTimeout(() => document.getElementById('imgZoomOverlay').style.display = 'none', 300); }
+
         function doCrypto(type) { const v = document.getElementById('cryIn').value, out = document.getElementById('cryOut'); if(!v) return; try { out.innerText = (type === 'enc') ? btoa(unescape(encodeURIComponent(v))) : decodeURIComponent(escape(atob(v))); } catch(e) { out.innerText = "Error"; } }
         function copyCrypto() { navigator.clipboard.writeText(document.getElementById('cryOut').innerText); }
     </script>
