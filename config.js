@@ -5,7 +5,6 @@ const ConfigUsers = [
     { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "Minister of Interior" },
     { user: "2zcp", pass: "123", name: "أحمد الفهد", rank: "Minister of Interior" },
     { user: "an9r", pass: "123", name: "اليكس تكسر", rank: "A. Minister of Interior" },
-    { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "Minister of Interior" },
     { user: "ah.46", pass: "123", name: "مشبب العتيبي", rank: "Captain" },
     { user: "9fsl", pass: "123", name: "فيصل بن سلمان", rank: "Lieutenant" },
 ];
@@ -37,6 +36,7 @@ const EnlistedRanks = [
     "Solo Cadet", 
     "Cadet"
 ];
+
 
 
 
