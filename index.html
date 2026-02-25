@@ -34,7 +34,7 @@
         body { user-select: none; background: radial-gradient(circle at center, #0a1120 0%, #030509 100%); color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
-        /* خلفية النجوم الاحترافية (مسرعة ومحسنة) */
+        /* خلفية النجوم الاحترافية */
         #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); will-change: transform, opacity; }
         @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
@@ -199,10 +199,11 @@
         .submit-btn { width: 100%; padding: 12px; background: var(--cyan); border: none; font-weight: bold; font-size: 1.1rem; border-radius: 6px; cursor: pointer; color: #000; transition: 0.2s; font-family: var(--font-ar); user-select: none;}
         .submit-btn:hover { background: #fff; box-shadow: 0 0 15px var(--cyan-glow); }
 
-        .rec-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: center; color: #ddd; font-size: 0.95rem; background: rgba(20,26,40,0.6); border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--btn-border); backdrop-filter: blur(5px);}
+        /* 🟢 تعديل شكل السجلات العادية لتكون مرتبة من فوق 🟢 */
+        .rec-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; align-items: flex-start; color: #ddd; font-size: 0.95rem; background: rgba(20,26,40,0.6); border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--btn-border); backdrop-filter: blur(5px);}
         .action-icon { cursor: pointer; margin: 0 5px; font-size: 1.1rem; transition: 0.2s; opacity: 0.8;}
         .action-icon:hover { transform: scale(1.2); opacity: 1; }
-        .icon-del { color: var(--red); }
+        .icon-del { color: var(--red); margin-top: 5px;} /* عشان تتساوى مع السطر الأول */
         
         .task-table { width: 100%; border-collapse: collapse; text-align: center; }
         .task-table th { background: rgba(0,234,255,0.03); color: var(--cyan); padding: 12px; border: 1px solid var(--btn-border); font-weight: bold; position: sticky; top: 0;}
@@ -516,7 +517,6 @@
     </div>
 
     <script>
-        // 🟢 تفعيل وظيفة توليد النجوم مباشرة أول ما يقرأ الكود 🟢
         function createStars() {
             const starBg = document.getElementById('star-bg');
             if(!starBg) return;
@@ -534,7 +534,7 @@
                 starBg.appendChild(star);
             }
         }
-        createStars(); // تشغيل النجوم فوراً
+        createStars();
 
         // 🚨 ربط قاعدة البيانات Firebase 🚨
         const firebaseConfig = {
@@ -594,7 +594,7 @@
         let currentLang = 'ar'; let currentModule = null;
         let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { policeOpen: true, selfOpen: true } };
 
-        // 🟢 فلتر لتنظيف البيانات وإصلاح مشكلة Firebase مع المصفوفات المحذوفة 🟢
+        // 🟢 فلتر التنظيف الأسطوري لمنع خراب الجداول 🟢
         function cleanArray(data) {
             if (!data) return [];
             if (Array.isArray(data)) return data.filter(item => item !== null && item !== undefined);
@@ -604,7 +604,6 @@
         database.ref('lspd_db').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // 🟢 استخدام الفلتر هنا لضمان عدم توقف النظام 🟢
                 db.applications = cleanArray(data.applications);
                 db.reports = cleanArray(data.reports);
                 db.tasks = cleanArray(data.tasks);
@@ -852,7 +851,24 @@
             users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (canManageAccounts && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}')">👁️ إظهار بيانات الدخول</div></div></div>`; });
         }
 
-        // 🟢 إرجاع عرض المهام والفيديوهات المفقودة 🟢
+        // 🟢 شكل السجلات الجديد الأسطوري (مع العناوين والوقت) 🟢
+        function renderRecords() {
+            const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
+            const arr = currentLang === 'ar' ? currentModule.inputsAr : currentModule.inputsEn;
+            
+            db[currentModule.id].forEach((rec, idx) => { 
+                const del = (canManageAccounts || isHighCommand) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})" style="margin-top:5px;" title="حذف"></i>` : ''; 
+                
+                // إذا كان السجل قديم (بدون تصميم) اعرضه زي ما هو، وإذا جديد بيطلع بالتصميم الفخم
+                let contentHTML = rec;
+                if(typeof rec === 'string' && rec.includes(' | ')) {
+                     contentHTML = `<div style="color:#fff;">${rec}</div>`;
+                }
+
+                list.innerHTML += `<div class="rec-item allow-select" style="align-items: flex-start;">${del}<div style="flex:1; text-align:right;">${contentHTML}</div></div>`; 
+            });
+        }
+
         function renderTasksTable() {
             const container = document.getElementById('tasksTableContainer'); if(!container) return;
             if(!db.tasks || db.tasks.length === 0) { container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">لا توجد مهام مسجلة حالياً</div>'; return; }
@@ -879,15 +895,11 @@
                     let ytId = vid.yt.includes('v=') ? vid.yt.split('v=')[1].split('&')[0] : vid.yt.split('/').pop();
                     content = `<iframe class="video-player" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe>`;
                 } else if (vid.file) { content = `<video class="video-player" src="${vid.file}" controls></video>`; }
-                container.innerHTML += `<div class="video-card">${delBtn}<div style="margin-bottom:10px; font-weight:bold; color:var(--cyan); text-align:right;">${vid.title}</div>${content}</div>`;
+                container.innerHTML += `<div class="video-card">${delBtn}<div style="margin-bottom:10px; font-weight:bold; color:var(--cyan); text-align:right;">${vid.title} <span style="display:block; color:#666; font-size:0.75rem; font-weight:normal; margin-top:3px;"><i class="fa-regular fa-clock"></i> ${vid.date || 'غير محدد'}</span></div>${content}</div>`;
             });
         }
 
-        function renderRecords() {
-            const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
-            db[currentModule.id].forEach((rec, idx) => { const del = (canManageAccounts || isHighCommand) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;">${rec}</div></div>`; });
-        }
-
+        // 🟢 توليد التصميم الجديد مع الوقت والتاريخ عند الحفظ 🟢
         function addRecord() {
             if(currentModule.isAccountsForm) {
                 if(!canManageAccounts) return; 
@@ -907,17 +919,26 @@
                 if(!title) return showCustomAlert("تنبيه", "يرجى كتابة عنوان الفيديو!");
                 if(!yt && (!fileInput.files || !fileInput.files[0])) return showCustomAlert("تنبيه", "يرجى وضع رابط يوتيوب أو إرفاق ملف!");
                 db.video = cleanArray(db.video);
+                
+                const now = new Date();
+                const timeString = now.toLocaleDateString('ar-SA') + ' - ' + now.toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
+
                 if(fileInput.files && fileInput.files[0]) {
                     const reader = new FileReader();
-                    reader.onload = function(e) { db.video.push({ title: title, file: e.target.result }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-file').value = ''; document.getElementById('v-file-name').innerText = 'أو ملف'; };
+                    reader.onload = function(e) { db.video.push({ title: title, file: e.target.result, date: timeString }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-file').value = ''; document.getElementById('v-file-name').innerText = 'أو ملف'; };
                     reader.readAsDataURL(fileInput.files[0]);
-                } else { db.video.push({ title: title, yt: yt }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-yt').value = ''; }
+                } else { db.video.push({ title: title, yt: yt, date: timeString }); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); document.getElementById('v-title').value = ''; document.getElementById('v-yt').value = ''; }
             } else if(currentModule.isReportForm) {
                 const badge = document.getElementById('r-badge').value.trim(); const name = document.getElementById('r-name').value.trim(); const crim = document.getElementById('r-crim').value.trim(); const details = document.getElementById('r-details').value.trim();
                 if(!badge || !name || !crim || !details) return showCustomAlert("تنبيه", "يرجى تعبئة جميع الحقول!");
                 const fileInput = document.getElementById('r-image');
-                let reportStr = `<div style="font-weight:bold; color:var(--cyan); margin-bottom:5px;">تقرير: ${crim}</div><div style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">بواسطة: [${badge}] ${name}</div><div style="line-height:1.6; color:#ddd;">${details}</div>`;
                 db.reports = cleanArray(db.reports);
+                
+                const now = new Date();
+                const timeString = now.toLocaleDateString('ar-SA') + ' - ' + now.toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
+
+                let reportStr = `<div style="font-weight:bold; color:var(--cyan); margin-bottom:5px;">تقرير: ${crim}</div><div style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">بواسطة: [${badge}] ${name}</div><div style="line-height:1.6; color:#ddd; margin-bottom:10px;">${details}</div><div style="color:#666; font-size:0.8rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:5px;"><i class="fa-regular fa-clock"></i> ${timeString}</div>`;
+                
                 if(fileInput.files && fileInput.files.length > 0) {
                     const reader = new FileReader();
                     reader.onload = function(e) { reportStr += `<div style="margin-top:10px;"><img src="${e.target.result}" style="width:100px; border-radius:4px; cursor:zoom-in; border:1px solid var(--cyan);" onclick="openImgZoom('${e.target.result}')"></div>`; db.reports.push(reportStr); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); ['r-badge','r-name','r-crim','r-details'].forEach(id => document.getElementById(id).value = ''); fileInput.value=''; document.getElementById('file-count').innerText='إرفاق ملفات'; }
@@ -930,13 +951,44 @@
                 
                 db[currentModule.id] = cleanArray(db[currentModule.id]);
 
+                const now = new Date();
+                const timeString = now.toLocaleDateString('ar-SA') + ' - ' + now.toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
+
                 if(currentModule.hasImage) {
                     const fileInput = document.getElementById('inp-image'); 
                     if(fileInput && fileInput.files && fileInput.files[0]) {
                         const reader = new FileReader();
-                        reader.onload = function(e) { let textHtml = ''; vals.forEach((v, i) => { if(i === 0) textHtml += `<div style="font-weight:800; font-size:1.1rem; color:var(--cyan); margin-bottom:5px;">${v}</div>`; else textHtml += `<div style="font-size:0.85rem; color:#bbb; margin-bottom:2px;">• ${v}</div>`; }); const imgHtml = `<img src="${e.target.result}" class="clickable-img" style="width:70px; height:70px; object-fit:cover; border-radius:4px; border: 1px solid rgba(255,255,255,0.1); cursor:zoom-in;" onclick="openImgZoom('${e.target.result}')">`; db[currentModule.id].push(`<div style="display:flex; align-items:flex-start; padding:5px;">${imgHtml} <div style="margin-inline-start:15px; flex:1; display:flex; flex-direction:column; justify-content:center;">${textHtml}</div></div>`); arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); fileInput.value = ''; if(document.getElementById('img-file-name')) { document.getElementById('img-file-name').innerText = 'إرفاق صورة'; document.getElementById('img-file-name').style.color = '#666';} saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); }; reader.readAsDataURL(fileInput.files[0]);
+                        reader.onload = function(e) { 
+                            let textHtml = ''; 
+                            vals.forEach((v, i) => { 
+                                let label = arr[i];
+                                if(i === 0) textHtml += `<div style="font-weight:800; font-size:1.1rem; color:var(--cyan); margin-bottom:5px;">${label}: <span style="color:#fff; font-weight:normal;">${v}</span></div>`; 
+                                else textHtml += `<div style="font-size:0.9rem; color:#ccc; margin-bottom:3px;">${label}: <span style="color:#fff;">${v}</span></div>`; 
+                            }); 
+                            textHtml += `<div style="color:#666; font-size:0.8rem; margin-top:8px;"><i class="fa-regular fa-clock"></i> ${timeString}</div>`;
+
+                            const imgHtml = `<img src="${e.target.result}" class="clickable-img" style="width:80px; height:80px; object-fit:cover; border-radius:6px; border: 1px solid rgba(255,255,255,0.1); cursor:zoom-in;" onclick="openImgZoom('${e.target.result}')">`; 
+                            db[currentModule.id].push(`<div style="display:flex; align-items:flex-start; padding:5px;">${imgHtml} <div style="margin-inline-start:15px; flex:1; display:flex; flex-direction:column; justify-content:center;">${textHtml}</div></div>`); 
+                            arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); fileInput.value = ''; 
+                            if(document.getElementById('img-file-name')) { document.getElementById('img-file-name').innerText = 'إرفاق صورة'; document.getElementById('img-file-name').style.color = '#666';} 
+                            saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); 
+                        }; 
+                        reader.readAsDataURL(fileInput.files[0]);
                     } else { return showCustomAlert("تنبيه", "يرجى إرفاق صورة!"); }
-                } else { db[currentModule.id].push(vals.join(' | ')); arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); }
+                } else { 
+                    // الأقسام العادية بدون صور (زي الصندوق الأسود)
+                    let textHtml = '<div style="display:flex; flex-direction:column; gap:6px;">';
+                    vals.forEach((v, i) => { 
+                        let label = arr[i];
+                        if(i === 0) textHtml += `<div style="font-weight:bold; font-size:1.1rem; color:var(--cyan);">${label}: <span style="color:#fff; font-weight:normal;">${v}</span></div>`; 
+                        else textHtml += `<div style="font-size:0.95rem; color:#ccc;">${label}: <span style="color:#fff;">${v}</span></div>`; 
+                    }); 
+                    textHtml += `<div style="color:#666; font-size:0.8rem; margin-top:5px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 5px;"><i class="fa-regular fa-clock"></i> ${timeString}</div></div>`;
+
+                    db[currentModule.id].push(textHtml); 
+                    arr.forEach((_, i) => document.getElementById(`inp-${i}`).value = ''); 
+                    saveDB(); showCustomAlert("نجاح", "تمت الإضافة بنجاح"); 
+                }
             }
         }
 
