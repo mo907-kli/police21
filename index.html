@@ -550,10 +550,13 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // 🟢 النظام يعتمد على هذا المتغير لتحديد هل الشخص ضابط (Officer) أم فرد (Enlisted) 🟢
         const configOfficers = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : ["Minister of Interior", "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"];
         const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Warrant Officer", "Sergeant Major", "Sergeant", "Corporal", "Officer", "Cadet"];
         const SystemRanks = [...configOfficers, ...configEnlisted];
-        let myRankIdx = 99; let canManageAccounts = false;
+        
+        let myRankIdx = 99; 
+        let isOfficer = false; // 🟢 تم إصلاح الصلاحيات هنا 🟢
 
         const i18n = {
             ar: {
@@ -566,10 +569,10 @@
             }
         };
 
-        // 🟢 إضافة شرط reqHighCommand للأقسام الإدارية 🟢
+        // 🟢 إضافة شرط reqOfficer للأقسام الإدارية 🟢
         const modules = [
-            { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqHighCommand: true },
-            { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqHighCommand: true },
+            { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true },
+            { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true },
             { id: 'reports', i18n_t: 'm_rep', isReportForm: true },
             { id: 'crypto', i18n_t: 'm_cry', isCrypto: true },
             { id: 'blackbox', i18n_t: 'm_box', inputsAr: ['رقم السجل', 'كود الوصول'] },
@@ -580,7 +583,7 @@
             { id: 'wanted', i18n_t: 'm_wan', hasImage: true, inputsAr: ['اسم الهدف', 'التهمة', 'الخطورة'] },
             { id: 'saved', i18n_t: 'm_sav', inputsAr: ['رقم التقرير', 'التصنيف'] },
             { id: 'armory', i18n_t: 'm_arm', inputsAr: ['نوع السلاح', 'الرقم التسلسلي', 'المستلم'] },
-            { id: 'officials', i18n_t: 'm_off', isAccountsForm: true, reqHighCommand: true },
+            { id: 'officials', i18n_t: 'm_off', isAccountsForm: true, reqOfficer: true },
             { id: 'gangs', i18n_t: 'm_gng', inputsAr: ['الاسم', 'النشاط'] }
         ];
 
@@ -670,7 +673,10 @@
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
                     document.getElementById('rankNameDisp').innerText = foundUser.name; 
                     myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = SystemRanks.length - 1; 
-                    isOfficer = true; canManageAccounts = configOfficers.includes(foundUser.rank); isHighCommand = (myRankIdx >= 0 && myRankIdx <= 8); 
+                    
+                    // 🟢 هنا النظام يتأكد هل رتبة الشخص موجودة في قائمة الضباط 🟢
+                    isOfficer = configOfficers.includes(foundUser.rank); 
+                    
                     renderModules();
                 }, 100);
             } else { document.getElementById('loginError').style.display = 'block'; }
@@ -679,13 +685,11 @@
         function logout() { location.reload(); }
         function goHome() { document.getElementById('moduleView').style.display = 'none'; document.getElementById('dashboardView').style.display = 'flex'; }
 
-        // 🟢 دالة رندر الأقسام مع الإخفاء للرتب الصغرى 🟢
+        // 🟢 إخفاء الأزرار عن الأفراد بناءً على الصلاحية 🟢
         function renderModules() {
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
-                // إذا كان القسم يتطلب رتبة عليا، والمستخدم الحالي مو رتبة عليا، لا تظهر الزر أبداً
-                if (m.reqHighCommand && !isHighCommand) return; 
-
+                if (m.reqOfficer && !isOfficer) return; 
                 c.innerHTML += `<div class="menu-btn" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
         }
@@ -718,7 +722,7 @@
             }
             else if(currentModule.isAccountsForm) {
                 dynamicArea.innerHTML = `<div id="mList"></div>`;
-                if(canManageAccounts) { 
+                if(isOfficer) { 
                     let rankOptions = ''; SystemRanks.forEach((r, idx) => { if(idx > myRankIdx) rankOptions += `<option value="${r}">${r}</option>`; });
                     submitBtn.style.display = 'block'; inpArea.innerHTML = `<div class="grid-inputs"><input type="text" id="o-user" class="gen-input" placeholder="${t.o_user}" autocomplete="off"><input type="password" id="o-pass" class="gen-input" placeholder="كلمة المرور" autocomplete="off"><input type="text" id="o-name" class="gen-input" placeholder="${t.o_name}" autocomplete="off"><select id="o-rank" class="gen-input"><option value="" disabled selected>${t.o_rank}</option>${rankOptions}</select></div>`;
                 } else { submitBtn.style.display = 'none'; inpArea.innerHTML = `<div style="color:var(--yellow); text-align:center; padding:15px; border:1px solid rgba(255,193,7,0.3); border-radius:4px; margin-bottom:10px; background:rgba(255,193,7,0.1);">${t.o_no_perm}</div>`; }
@@ -752,7 +756,7 @@
             let pStatusText = pOpen ? '<span style="color:var(--green); font-weight:bold;">مفتوح 🟢</span>' : '<span style="color:var(--red); font-weight:bold;">مغلق 🔴</span>';
             let sStatusText = sOpen ? '<span style="color:var(--green); font-weight:bold;">مفتوح 🟢</span>' : '<span style="color:var(--red); font-weight:bold;">مغلق 🔴</span>';
 
-            let toggleBtns = isHighCommand ? `
+            let toggleBtns = isOfficer ? `
                 <div style="display:flex; justify-content:center; gap:20px; margin-top:20px; flex-wrap:wrap;">
                     <button class="submit-btn" onclick="toggleAppStatus('police')" style="width:250px; cursor:pointer;">تغيير حالة (شرطة تايتنز)</button>
                     <button class="submit-btn" onclick="toggleAppStatus('self')" style="width:250px; cursor:pointer;">تغيير حالة (قدم نفسك)</button>
@@ -774,7 +778,7 @@
         }
 
         function toggleAppStatus(type) {
-            if(!isHighCommand) return;
+            if(!isOfficer) return;
             if(!db.settings) db.settings = { policeOpen: true, selfOpen: true };
             if(type === 'police') {
                 db.settings.policeOpen = !db.settings.policeOpen;
@@ -791,13 +795,13 @@
             
             [...db.applications].reverse().forEach((app, reverseIdx) => {
                 const idx = db.applications.length - 1 - reverseIdx; 
-                const delBtn = canManageAccounts ? `<i class="fa-solid fa-trash action-icon icon-del" style="cursor:pointer; color:var(--red); position:absolute; top:20px; left:20px;" onclick="deleteApp(${idx})" title="حذف الطلب"></i>` : '';
+                const delBtn = isOfficer ? `<i class="fa-solid fa-trash action-icon icon-del" style="cursor:pointer; color:var(--red); position:absolute; top:20px; left:20px;" onclick="deleteApp(${idx})" title="حذف الطلب"></i>` : '';
                 
                 let statusHtml = '';
                 if (app.status === 'accepted') { statusHtml = `<span class="badge-status" style="color:var(--green); border-color:var(--green); background:rgba(0,255,106,0.1);">تم القبول ✔️</span>`; } 
                 else if (app.status === 'rejected') { statusHtml = `<span class="badge-status" style="color:var(--red); border-color:var(--red); background:rgba(255,51,51,0.1);">مرفوض ❌</span>`; } 
                 else {
-                    if (isHighCommand || isOfficer) { statusHtml = `<button class="btn-acc" onclick="updateAppStatus(${idx}, 'accepted')">قبول</button><button class="btn-rej" onclick="updateAppStatus(${idx}, 'rejected')">رفض</button>`; } 
+                    if (isOfficer) { statusHtml = `<button class="btn-acc" onclick="updateAppStatus(${idx}, 'accepted')">قبول</button><button class="btn-rej" onclick="updateAppStatus(${idx}, 'rejected')">رفض</button>`; } 
                     else { statusHtml = `<span class="badge-status" style="color:var(--yellow); border-color:var(--yellow); background:rgba(255,193,7,0.1);">قيد المراجعة ⏳</span>`; }
                 }
 
@@ -833,21 +837,21 @@
             });
         }
 
-        function updateAppStatus(idx, newStatus) { if(!db.applications[idx]) return; db.applications[idx].status = newStatus; saveDB(); }
-        function deleteApp(idx) { if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); saveDB(); } }
+        function updateAppStatus(idx, newStatus) { if(!isOfficer) return; if(!db.applications[idx]) return; db.applications[idx].status = newStatus; saveDB(); }
+        function deleteApp(idx) { if(!isOfficer) return; if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); saveDB(); } }
 
         function renderAccounts() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
             configU.forEach((u) => { let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div></div></div>`; });
             let users = db.customUsers || [];
-            users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (canManageAccounts && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div></div></div>`; });
+            users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (isOfficer && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div></div></div>`; });
         }
 
         function renderRecords() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
             db[currentModule.id].forEach((rec, idx) => { 
-                const del = (canManageAccounts || isHighCommand) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})" title="حذف"></i>` : ''; 
+                const del = isOfficer ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})" title="حذف"></i>` : ''; 
                 let contentHTML = rec;
                 if(typeof rec === 'string' && rec.includes(' | ')) { contentHTML = `<div style="color:#fff;">${rec}</div>`; }
                 list.innerHTML += `<div class="rec-item allow-select" style="align-items: flex-start;">${del}<div style="flex:1; text-align:right;">${contentHTML}</div></div>`; 
@@ -861,7 +865,7 @@
             db.tasks.forEach((t, idx) => {
                 let statusHtml = t.approved ? '<span class="badge-approved">معتمدة ✔️</span>' : '<span class="badge-pending">قيد الانتظار ⏳</span>';
                 let actionHtml = '';
-                if(canManageAccounts || isHighCommand) { 
+                if(isOfficer) { 
                     actionHtml += `<i class="fa-solid fa-trash action-icon icon-del" onclick="delRec(${idx})" title="حذف"></i>`;
                     if(!t.approved) actionHtml += ` <i class="fa-solid fa-check action-icon" style="color:var(--green); margin-right:10px;" onclick="approveTask(${idx})" title="اعتماد"></i>`;
                 }
@@ -874,7 +878,7 @@
             const container = document.getElementById('videoGridContainer'); if(!container) return; container.innerHTML = '';
             if(!db.video || db.video.length === 0) { container.innerHTML = '<div style="text-align:center; padding:20px; color:#888; grid-column: 1 / -1;">لا توجد مقاطع حالياً</div>'; return; }
             db.video.forEach((vid, idx) => {
-                const delBtn = (canManageAccounts || isHighCommand) ? `<button class="del-video-btn" onclick="delRec(${idx})"><i class="fa-solid fa-xmark"></i></button>` : '';
+                const delBtn = isOfficer ? `<button class="del-video-btn" onclick="delRec(${idx})"><i class="fa-solid fa-xmark"></i></button>` : '';
                 let content = '';
                 if(vid.yt) {
                     let ytId = vid.yt.includes('v=') ? vid.yt.split('v=')[1].split('&')[0] : vid.yt.split('/').pop();
@@ -887,7 +891,7 @@
         function addRecord() {
             try {
                 if(currentModule.isAccountsForm) {
-                    if(!canManageAccounts) return; 
+                    if(!isOfficer) return; 
                     const u = document.getElementById('o-user').value.trim(), p = document.getElementById('o-pass').value.trim(), n = document.getElementById('o-name').value.trim(), r = document.getElementById('o-rank').value;
                     if(!u || !p || !n || !r) return showCustomAlert("تنبيه", i18n['ar']['o_err'], false);
                     let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; db.customUsers = cleanArray(db.customUsers); 
@@ -985,9 +989,9 @@
             }
         }
 
-        function delAccount(idx) { db.customUsers.splice(idx, 1); saveDB(); }
-        function delRec(idx) { db[currentModule.id] = cleanArray(db[currentModule.id]); db[currentModule.id].splice(idx, 1); saveDB(); }
-        function approveTask(idx) { if(!isHighCommand) return; db.tasks = cleanArray(db.tasks); db.tasks[idx].approved = true; saveDB(); }
+        function delAccount(idx) { if(!isOfficer) return; db.customUsers.splice(idx, 1); saveDB(); }
+        function delRec(idx) { if(!isOfficer) return; db[currentModule.id] = cleanArray(db[currentModule.id]); db[currentModule.id].splice(idx, 1); saveDB(); }
+        function approveTask(idx) { if(!isOfficer) return; db.tasks = cleanArray(db.tasks); db.tasks[idx].approved = true; saveDB(); }
 
         function showCustomAlert(title, message, isSuccess = true) { 
             document.getElementById('alertTitle').innerText = title; 
