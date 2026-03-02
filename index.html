@@ -550,13 +550,13 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 النظام يعتمد على هذا المتغير لتحديد هل الشخص ضابط (Officer) أم فرد (Enlisted) 🟢
+        // 🟢 الرتب تم تعريفها هنا، النظام يعتبر أي رتبة في OfficerRanks "ضابط" له صلاحيات الإدارة 🟢
         const configOfficers = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : ["Minister of Interior", "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"];
-        const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Warrant Officer", "Sergeant Major", "Sergeant", "Corporal", "Officer", "Cadet"];
+        const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Staff Sergeant", "First Sergeant", "Sergeant", "Senior Lead Officer", "Senior Officer", "Officer III", "Officer II", "Officer I", "Solo Cadet", "Cadet"];
         const SystemRanks = [...configOfficers, ...configEnlisted];
         
         let myRankIdx = 99; 
-        let isOfficer = false; // 🟢 تم إصلاح الصلاحيات هنا 🟢
+        let isOfficer = false; 
 
         const i18n = {
             ar: {
@@ -569,7 +569,7 @@
             }
         };
 
-        // 🟢 إضافة شرط reqOfficer للأقسام الإدارية 🟢
+        // 🟢 الأقسام المربوطة بـ reqOfficer ما تطلع للأفراد نهائياً 🟢
         const modules = [
             { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true },
             { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true },
@@ -624,7 +624,6 @@
 
         function saveDB() { 
             database.ref('lspd_db').set(db).catch(err => {
-                console.error("خطأ في فايربيس:", err);
                 showCustomAlert("خطأ في الاتصال", "فشل الحفظ في قاعدة البيانات. قد يكون السبب أنك حاولت رفع ملف حجمه كبير جداً.", false);
             }); 
         }
@@ -672,9 +671,9 @@
                 setTimeout(() => {
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
                     document.getElementById('rankNameDisp').innerText = foundUser.name; 
-                    myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = SystemRanks.length - 1; 
+                    myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = 999; 
                     
-                    // 🟢 هنا النظام يتأكد هل رتبة الشخص موجودة في قائمة الضباط 🟢
+                    // تحديد هل المستخدم ضابط بناءً على مصفوفة OfficerRanks
                     isOfficer = configOfficers.includes(foundUser.rank); 
                     
                     renderModules();
@@ -685,10 +684,11 @@
         function logout() { location.reload(); }
         function goHome() { document.getElementById('moduleView').style.display = 'none'; document.getElementById('dashboardView').style.display = 'flex'; }
 
-        // 🟢 إخفاء الأزرار عن الأفراد بناءً على الصلاحية 🟢
+        // 🟢 إخفاء الأزرار الإدارية عن الأفراد 🟢
         function renderModules() {
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
+                // إذا كان القسم للضباط، واللي داخل مو ضابط، لا تطلّع له الزر
                 if (m.reqOfficer && !isOfficer) return; 
                 c.innerHTML += `<div class="menu-btn" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
@@ -840,12 +840,33 @@
         function updateAppStatus(idx, newStatus) { if(!isOfficer) return; if(!db.applications[idx]) return; db.applications[idx].status = newStatus; saveDB(); }
         function deleteApp(idx) { if(!isOfficer) return; if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); saveDB(); } }
 
+        // 🟢 الضباط يشوفون فقط حسابات الرتب اللي أقل منهم في إدارة الحسابات 🟢
         function renderAccounts() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
+            
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
-            configU.forEach((u) => { let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div></div></div>`; });
+            configU.forEach((u) => { 
+                let uRankIdx = SystemRanks.indexOf(u.rank); if(uRankIdx === -1) uRankIdx = 999;
+                let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; 
+                
+                // زر عرض البيانات يظهر فقط إذا رتبتي أعلى (رقمي أصغر) من رتبته
+                let dataBtn = (myRankIdx < uRankIdx) ? `<div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px; margin-top:5px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div>` : `<div style="font-size:0.8rem; color:#555; display:inline-block; border:1px solid rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; background:rgba(0,0,0,0.3); margin-top:5px;">🔒 لا تملك صلاحية لبيانات هذا الحساب</div>`;
+                
+                list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div>${dataBtn}</div></div>`; 
+            });
+            
             let users = db.customUsers || [];
-            users.forEach((u, idx) => { let uRankIdx = SystemRanks.indexOf(u.rank); let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; const del = (isOfficer && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div><div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div></div></div>`; });
+            users.forEach((u, idx) => { 
+                let uRankIdx = SystemRanks.indexOf(u.rank); if(uRankIdx === -1) uRankIdx = 999;
+                let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; 
+                
+                const del = (isOfficer && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; 
+                
+                // زر عرض البيانات يظهر فقط للرتب الأقل
+                let dataBtn = (myRankIdx < uRankIdx) ? `<div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px; margin-top:5px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div>` : `<div style="font-size:0.8rem; color:#555; display:inline-block; border:1px solid rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; background:rgba(0,0,0,0.3); margin-top:5px;">🔒 لا تملك صلاحية لبيانات هذا الحساب</div>`;
+                
+                list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div>${dataBtn}</div></div>`; 
+            });
         }
 
         function renderRecords() {
