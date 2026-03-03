@@ -1,6 +1,6 @@
 ﻿// ==========================================// الحسابات الأساسية التي لا تُحذف أبداً (تقدر تضيف القيادات هنا)
 const ConfigUsers = [
-   
+   { user: "admin", pass: "123", name: "dev", rank: "Minister of Interior" },
 ];
 // رتب الضباط والقيادة العليا - لهم صلاحيات كاملة (إنشاء حسابات، قبول مهام)
 const OfficerRanks = [
@@ -30,6 +30,7 @@ const EnlistedRanks = [
     "Solo Cadet", 
     "Cadet"
 ];
+
 
 
 
