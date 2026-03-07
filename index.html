@@ -515,26 +515,13 @@
     </div>
 
     <script>
-        // منع الكليك يمين
         document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // منع اختصارات لوحة المفاتيح للمطورين
         document.onkeydown = function (e) {
-            if (e.keyCode == 123) { // F12
-                return false;
-            }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
-                return false;
-            }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
-                return false;
-            }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
-                return false;
-            }
-            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
-                return false;
-            }
+            if (e.keyCode == 123) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
 
         function createStars() {
@@ -575,6 +562,8 @@
         
         let myRankIdx = 99; 
         let isOfficer = false; 
+        let myName = "";
+        let myDept = "";
 
         const i18n = {
             ar: {
@@ -687,11 +676,14 @@
                 const ls = document.getElementById('loginScreen'); ls.style.opacity = '0';
                 setTimeout(() => {
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
-                    document.getElementById('rankNameDisp').innerText = foundUser.name; 
+                    
                     myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = 999; 
-                    
                     isOfficer = configOfficers.includes(foundUser.rank); 
-                    
+                    myName = foundUser.name;
+                    myDept = foundUser.dept || "";
+
+                    document.getElementById('rankNameDisp').innerText = myDept ? `${myName} (${myDept})` : myName; 
+
                     renderModules();
                 }, 100);
             } else { document.getElementById('loginError').style.display = 'block'; }
@@ -738,7 +730,25 @@
                 dynamicArea.innerHTML = `<div id="mList"></div>`;
                 if(isOfficer) { 
                     let rankOptions = ''; SystemRanks.forEach((r, idx) => { if(idx > myRankIdx) rankOptions += `<option value="${r}">${r}</option>`; });
-                    submitBtn.style.display = 'block'; inpArea.innerHTML = `<div class="grid-inputs"><input type="text" id="o-user" class="gen-input" placeholder="${t.o_user}" autocomplete="off"><input type="password" id="o-pass" class="gen-input" placeholder="كلمة المرور" autocomplete="off"><input type="text" id="o-name" class="gen-input" placeholder="${t.o_name}" autocomplete="off"><select id="o-rank" class="gen-input"><option value="" disabled selected>${t.o_rank}</option>${rankOptions}</select></div>`;
+                    
+                    let deptOptions = ''; 
+                    if(typeof SecondaryRanks !== 'undefined') {
+                        SecondaryRanks.forEach(d => { deptOptions += `<option value="${d}">${d}</option>`; });
+                    }
+
+                    submitBtn.style.display = 'block'; 
+                    inpArea.innerHTML = `
+                    <div class="grid-inputs">
+                        <input type="text" id="o-user" class="gen-input" placeholder="${t.o_user}" autocomplete="off">
+                        <input type="password" id="o-pass" class="gen-input" placeholder="كلمة المرور" autocomplete="off">
+                        <input type="text" id="o-name" class="gen-input" placeholder="${t.o_name}" autocomplete="off">
+                        <select id="o-rank" class="gen-input"><option value="" disabled selected>${t.o_rank}</option>${rankOptions}</select>
+                    </div>
+                    <select id="o-dept" class="gen-input" style="margin-top:10px;">
+                        <option value="" selected>الرتبة الثنائية / القسم (اختياري)</option>
+                        ${deptOptions}
+                    </select>
+                    `;
                 } else { submitBtn.style.display = 'none'; inpArea.innerHTML = `<div style="color:var(--yellow); text-align:center; padding:15px; border:1px solid rgba(255,193,7,0.3); border-radius:4px; margin-bottom:10px; background:rgba(255,193,7,0.1);">${t.o_no_perm}</div>`; }
                 renderAccounts();
             } else if(currentModule.isReportForm) {
@@ -856,27 +866,28 @@
 
         function renderAccounts() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
+            
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
             configU.forEach((u) => { 
                 let uRankIdx = SystemRanks.indexOf(u.rank); if(uRankIdx === -1) uRankIdx = 999;
                 let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; 
+                let deptBadge = u.dept ? `<span style="font-size:0.7rem; background:rgba(0, 234, 255, 0.1); color:var(--cyan); padding:2px 6px; border-radius:4px; border:1px solid rgba(0, 234, 255, 0.3); margin-right:5px; margin-left:5px;">${u.dept}</span>` : '';
                 
-                // 🟢 زر البيانات يظهر فقط إذا رتبتي أعلى 🟢
                 let dataBtn = (myRankIdx < uRankIdx) ? `<div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px; margin-top:5px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div>` : `<div style="font-size:0.8rem; color:#555; display:inline-block; border:1px solid rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; background:rgba(0,0,0,0.3); margin-top:5px;">🔒 لا تملك صلاحية لبيانات هذا الحساب</div>`;
                 
-                list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div>${dataBtn}</div></div>`; 
+                list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} ${deptBadge} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div>${dataBtn}</div></div>`; 
             });
             
             let users = db.customUsers || [];
             users.forEach((u, idx) => { 
                 let uRankIdx = SystemRanks.indexOf(u.rank); if(uRankIdx === -1) uRankIdx = 999;
                 let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; 
-                
+                let deptBadge = u.dept ? `<span style="font-size:0.7rem; background:rgba(0, 234, 255, 0.1); color:var(--cyan); padding:2px 6px; border-radius:4px; border:1px solid rgba(0, 234, 255, 0.3); margin-right:5px; margin-left:5px;">${u.dept}</span>` : '';
+
                 const del = (isOfficer && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; 
-                
                 let dataBtn = (myRankIdx < uRankIdx) ? `<div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px; margin-top:5px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div>` : `<div style="font-size:0.8rem; color:#555; display:inline-block; border:1px solid rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; background:rgba(0,0,0,0.3); margin-top:5px;">🔒 لا تملك صلاحية لبيانات هذا الحساب</div>`;
                 
-                list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div>${dataBtn}</div></div>`; 
+                list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} ${deptBadge}</div>${dataBtn}</div></div>`; 
             });
         }
 
@@ -925,10 +936,11 @@
                 if(currentModule.isAccountsForm) {
                     if(!isOfficer) return; 
                     const u = document.getElementById('o-user').value.trim(), p = document.getElementById('o-pass').value.trim(), n = document.getElementById('o-name').value.trim(), r = document.getElementById('o-rank').value;
+                    const dept = document.getElementById('o-dept') ? document.getElementById('o-dept').value.trim() : ""; 
                     if(!u || !p || !n || !r) return showCustomAlert("تنبيه", i18n['ar']['o_err'], false);
                     let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; db.customUsers = cleanArray(db.customUsers); 
                     if(configU.some(x => x.user === u) || db.customUsers.some(x => x.user === u)) return showCustomAlert("تنبيه", i18n['ar']['o_exists'], false);
-                    db.customUsers.push({ user: u, pass: p, name: n, rank: r }); saveDB(); showCustomAlert("نجاح", "تم إضافة الحساب بنجاح!", true); ['o-user','o-pass','o-name','o-rank'].forEach(id => document.getElementById(id).value = ''); 
+                    db.customUsers.push({ user: u, pass: p, name: n, rank: r, dept: dept }); saveDB(); showCustomAlert("نجاح", "تم إضافة الحساب بنجاح!", true); ['o-user','o-pass','o-name','o-rank','o-dept'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = '' }); 
                 } else if(currentModule.isTable) {
                     const assignee = document.getElementById('t-assignee').value.trim(); const officer = document.getElementById('t-officer').value.trim();
                     const reason = document.getElementById('t-reason').value.trim(); const pts = document.getElementById('t-pts').value.trim();
