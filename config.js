@@ -7,11 +7,13 @@ const ConfigUsers = [
     { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "Minister of Interior" },
     { user: "2zcp", pass: "123", name: "أحمد الفهد", rank: "Minister of Interior" },
     { user: "an9r", pass: "123", name: "اليكس تكسر", rank: "A. Minister of Interior" },
+    { user: "Saeed Faiz", pass: "123", name: "معالي سعيد فايز", rank: "Colonel" },
     { user: "ah.46", pass: "123", name: "مشبب العتيبي", rank: "Captain" },
     { user: "9fsl", pass: "123", name: "فيصل بن سلمان", rank: "Lieutenant" },
     { user: "2ii6", pass: "123", name: "فيكاريو اسلا", rank: "Deputy L.S.P.D Chief" },
     { user: "mo", pass: "123", name: "dev", rank: "Cadet" },
     { user: "tav.l7", pass: "123", name: "تاف مارفل", rank: "Lieutenant" },
+    
 
 ];
 // رتب الضباط والقيادة العليا - لهم صلاحيات كاملة (إنشاء حسابات، قبول مهام)
@@ -42,6 +44,7 @@ const EnlistedRanks = [
     "Solo Cadet", 
     "Cadet"
 ];
+
 
 
 
