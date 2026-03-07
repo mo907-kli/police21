@@ -34,7 +34,6 @@
         body { user-select: none; background: radial-gradient(circle at center, #0a1120 0%, #030509 100%); color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
-        /* خلفية النجوم الاحترافية */
         #star-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); will-change: transform, opacity; }
         @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
@@ -45,7 +44,6 @@
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
-        /* نافذة تكبير الصور */
         #imgZoomOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999999; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s ease; cursor: zoom-out; backdrop-filter: blur(5px); }
         #imgZoomOverlay.active { opacity: 1; }
         #zoomedImg { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 30px rgba(0,234,255,0.4); border: 2px solid var(--cyan); transform: scale(0.8); transition: transform 0.2s ease; }
@@ -517,6 +515,28 @@
     </div>
 
     <script>
+        // منع الكليك يمين
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // منع اختصارات لوحة المفاتيح للمطورين
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) { // F12
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
+                return false;
+            }
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
+                return false;
+            }
+        };
+
         function createStars() {
             const starBg = document.getElementById('star-bg');
             if(!starBg) return;
@@ -536,7 +556,6 @@
         }
         createStars();
 
-        // 🚨 ربط قاعدة البيانات Firebase 🚨
         const firebaseConfig = {
             apiKey: "AIzaSyC5PL_fJEjiJVQS8rnx4m8j9uQNsILcQvs",
             authDomain: "police-depa.firebaseapp.com",
@@ -550,7 +569,6 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 الرتب تم تعريفها هنا، النظام يعتبر أي رتبة في OfficerRanks "ضابط" له صلاحيات الإدارة 🟢
         const configOfficers = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : ["Minister of Interior", "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"];
         const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Staff Sergeant", "First Sergeant", "Sergeant", "Senior Lead Officer", "Senior Officer", "Officer III", "Officer II", "Officer I", "Solo Cadet", "Cadet"];
         const SystemRanks = [...configOfficers, ...configEnlisted];
@@ -569,7 +587,6 @@
             }
         };
 
-        // 🟢 الأقسام المربوطة بـ reqOfficer ما تطلع للأفراد نهائياً 🟢
         const modules = [
             { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true },
             { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true },
@@ -673,7 +690,6 @@
                     document.getElementById('rankNameDisp').innerText = foundUser.name; 
                     myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = 999; 
                     
-                    // تحديد هل المستخدم ضابط بناءً على مصفوفة OfficerRanks
                     isOfficer = configOfficers.includes(foundUser.rank); 
                     
                     renderModules();
@@ -684,11 +700,9 @@
         function logout() { location.reload(); }
         function goHome() { document.getElementById('moduleView').style.display = 'none'; document.getElementById('dashboardView').style.display = 'flex'; }
 
-        // 🟢 إخفاء الأزرار الإدارية عن الأفراد 🟢
         function renderModules() {
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
-                // إذا كان القسم للضباط، واللي داخل مو ضابط، لا تطلّع له الزر
                 if (m.reqOfficer && !isOfficer) return; 
                 c.innerHTML += `<div class="menu-btn" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
@@ -840,16 +854,14 @@
         function updateAppStatus(idx, newStatus) { if(!isOfficer) return; if(!db.applications[idx]) return; db.applications[idx].status = newStatus; saveDB(); }
         function deleteApp(idx) { if(!isOfficer) return; if(confirm("هل أنت متأكد من حذف هذا التقديم بشكل نهائي؟")) { db.applications.splice(idx, 1); saveDB(); } }
 
-        // 🟢 الضباط يشوفون فقط حسابات الرتب اللي أقل منهم في إدارة الحسابات 🟢
         function renderAccounts() {
             const list = document.getElementById('mList'); if(!list) return; list.innerHTML = '';
-            
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
             configU.forEach((u) => { 
                 let uRankIdx = SystemRanks.indexOf(u.rank); if(uRankIdx === -1) uRankIdx = 999;
                 let rankColor = configOfficers.includes(u.rank) ? 'var(--cyan)' : 'var(--text-muted)'; 
                 
-                // زر عرض البيانات يظهر فقط إذا رتبتي أعلى (رقمي أصغر) من رتبته
+                // 🟢 زر البيانات يظهر فقط إذا رتبتي أعلى 🟢
                 let dataBtn = (myRankIdx < uRankIdx) ? `<div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px; margin-top:5px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div>` : `<div style="font-size:0.8rem; color:#555; display:inline-block; border:1px solid rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; background:rgba(0,0,0,0.3); margin-top:5px;">🔒 لا تملك صلاحية لبيانات هذا الحساب</div>`;
                 
                 list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;"><div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name} <span style="font-size:0.65rem; background:#111; padding:2px 6px; border-radius:4px; color:#888; border:1px solid #333;">أساسي</span></div>${dataBtn}</div></div>`; 
@@ -862,7 +874,6 @@
                 
                 const del = (isOfficer && myRankIdx < uRankIdx) ? `<i class="fa-solid fa-trash action-icon icon-del" onclick="delAccount(${idx})" title="حذف الحساب"></i>` : ''; 
                 
-                // زر عرض البيانات يظهر فقط للرتب الأقل
                 let dataBtn = (myRankIdx < uRankIdx) ? `<div style="font-size:0.85rem; color:#888; cursor:pointer; display:inline-block; border:1px solid #333; padding:2px 8px; border-radius:4px; margin-top:5px;" onclick="showCustomAlert('بيانات الدخول', 'اسم المستخدم: ${u.user}\\nكلمة المرور: ${u.pass}', true)">👁️ إظهار بيانات الدخول</div>` : `<div style="font-size:0.8rem; color:#555; display:inline-block; border:1px solid rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; background:rgba(0,0,0,0.3); margin-top:5px;">🔒 لا تملك صلاحية لبيانات هذا الحساب</div>`;
                 
                 list.innerHTML += `<div class="rec-item allow-select" style="align-items: center;">${del}<div style="flex:1; text-align:right;"><div style="font-size:1.1rem; font-weight:bold; margin-bottom:4px;"><span style="color:${rankColor}">[${u.rank}]</span> ${u.name}</div>${dataBtn}</div></div>`; 
