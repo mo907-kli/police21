@@ -45,7 +45,7 @@ const ConfigUsers = [
     { user: "north__7", pass: "123", name: "جون هنتر", rank: "Deputy Minister of Interior", dept: "" },
     { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "A. Minister of Interior", dept: "" },
     { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
-    { user: "2ii6", pass: "123", name: "فيكاريو أصلاء", rank: "Deputy Chief of Police", dept: "" },
+    { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
     { user: "ylt0", pass: "123", name: "جوزيف مورفي", rank: "A'Chief Of Police", dept: "" },
     { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Police Commander", dept: "" },
     { user: "t1iq", pass: "123", name: "سفر الدوسري", rank: "Police Commander", dept: "" },
@@ -68,7 +68,7 @@ const ConfigUsers = [
     { user: "ah.46", pass: "123", name: "مشبب العتيبي", rank: "Captain", dept: "" },
     { user: "tav.l7", pass: "123", name: "تاف مارفل", rank: "Captain", dept: "" },
     { user: "2m.ulster", pass: "123", name: "نواف عبدالله", rank: "Captain", dept: "" },
-    { user: "w.ssk", pass: "123", name: "ناصر أصلاء", rank: "First Lieutenant", dept: "" },
+    { user: "w.ssk", pass: "123", name: "ناصر  اسلا", rank: "First Lieutenant", dept: "" },
     { user: "i_s7s", pass: "123", name: "حسين الحازمي", rank: "First Lieutenant", dept: "" },
     { user: "ple.6", pass: "123", name: "عسكر الرشيدي", rank: "First Lieutenant", dept: "" },
     { user: "z4.e", pass: "123", name: "جهيمان العتيبي", rank: "First Lieutenant", dept: "" },
@@ -83,4 +83,5 @@ const ConfigUsers = [
     { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" },
     
 ];
+
 
