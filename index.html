@@ -81,7 +81,6 @@
         .community-desc { color: #8da2b5; font-size: 1.15rem; line-height: 1.8; max-width: 800px; margin: 0 auto 60px auto; }
         .community-cards { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
         .comm-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px; padding: 40px 30px; width: 350px; text-align: center; transition: 0.2s; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
-        /* تم إزالة الـ translateY عشان ما يتعارض مع مكتبة الـ 3D */
         .comm-card:hover { border-color: rgba(0,234,255,0.3); box-shadow: 0 10px 30px rgba(0,234,255,0.05); }
         .comm-icon { font-size: 3.5rem; color: var(--cyan); margin-bottom: 25px; opacity: 0.8; }
         .comm-card h3 { color: #fff; font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; }
@@ -527,16 +526,6 @@
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
 
-        // 🟢 نظام الذكاء الاصطناعي الصوتي (نطق النصوص) 🟢
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ar-SA'; // لغة عربية
-                utterance.rate = 1.0;     // سرعة طبيعية
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
         function createStars() {
             const starBg = document.getElementById('star-bg');
             if(!starBg) return;
@@ -695,9 +684,6 @@
             let foundUser = allUsers.find(x => x.user === u && x.pass === p);
             
             if(foundUser) {
-                // 🟢 نطق الترحيب عند الدخول الصحيح 🟢
-                speakText("حياك الله في موقع الشرطة يا " + foundUser.name);
-
                 const ls = document.getElementById('loginScreen'); ls.style.opacity = '0';
                 setTimeout(() => {
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
@@ -712,8 +698,6 @@
                     renderModules();
                 }, 100);
             } else { 
-                // 🟢 نطق الخطأ 🟢
-                speakText("خطأ، تأكد من المعلومات");
                 document.getElementById('loginError').style.display = 'block'; 
             }
         }
@@ -725,10 +709,8 @@
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
                 if (m.reqOfficer && !isOfficer) return; 
-                // 🟢 إضافة كلاس Tilt لأزرار لوحة التحكم 🟢
                 c.innerHTML += `<div class="menu-btn" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
-            // تفعيل مكتبة הـ Tilt للأزرار المضافة
             VanillaTilt.init(document.querySelectorAll(".menu-btn"));
         }
 
@@ -802,14 +784,6 @@
                 if(currentModule.hasImage) inpArea.innerHTML += `<div class="file-input-wrapper"><span id="img-file-name" class="file-label-text">إرفاق صورة</span><input type="file" id="inp-image" accept="image/*" onchange="document.getElementById('img-file-name').innerText = this.files[0].name; document.getElementById('img-file-name').style.color = '#00eaff';"></div>`;
                 renderRecords();
             }
-        }
-
-        function resetAllApplicationsFlag() {
-            if(!isOfficer) return;
-            if(!db.settings) db.settings = { policeOpen: true, selfOpen: true, appResetId: 1 };
-            db.settings.appResetId = (db.settings.appResetId || 1) + 1; 
-            saveDB();
-            showCustomAlert("تم الرستارت بنجاح", "تم فك حظر التقديم عن الجميع. يمكن للزوار الآن تقديم طلبات جديدة.", true);
         }
 
         function renderSettingsView() {
