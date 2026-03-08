@@ -1,7 +1,11 @@
 // 🟢 قائمة رتب الضباط (القيادة العليا اللي لهم صلاحيات الإدارة والقبول) 🟢
 const OfficerRanks = [
     "Minister of Interior", 
+    "Deputy Minister of Interior",
     "A. Minister of Interior", 
+    "Chief Of Police",          // 🟢 تم الإضافة
+    "Deputy Chief of Police",   // 🟢 تم الإضافة
+    "A'Chief Of Police",        // 🟢 تم الإضافة
     "Police Commander", 
     "L.S.P.D Chief", 
     "Deputy L.S.P.D Chief", 
@@ -35,9 +39,8 @@ const SecondaryRanks = [
 // 🟢 الحسابات الأساسية للنظام 🟢
 const ConfigUsers = [
     { user: "admin", pass: "123", name: "dev", rank: "Minister of Interior", dept: "" },
-    { user: "i.2lk", pass: "123", name: "سعود حمد", rank: "Minister of Interior", dept: "" },
-    { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Minister of Interior", dept: "" },
-    { user: "a7yg", pass: "123", name: "ايدلر سميث", rank: "Minister of Interior", dept: "" },
+    { user: "wx8w", pass: "123", name: "جاهد المجاهد", rank: "Minister of Interior", dept: "" },
+    { user: "north__7", pass: "123", name: "جون هنتر", rank: "A. Minister of Interior", dept: "" },
     { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "Minister of Interior", dept: "" },
     { user: "2zcp", pass: "123", name: "أحمد الفهد", rank: "Minister of Interior", dept: "" },
     { user: "an9r", pass: "123", name: "اليكس تكسر", rank: "A. Minister of Interior", dept: "" },
