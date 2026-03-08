@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة الشرطة | L.S.P.D</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Rajdhani:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -169,8 +169,40 @@
 
         #dashboardView { flex: 1; display: flex; align-items: center; justify-content: center; padding-bottom: 60px; animation: fadeIn 0.3s ease; overflow-y: auto; flex-direction: column;}
         .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 75%; max-width: 950px; margin: 0 auto; }
-        .menu-btn { background: var(--btn-bg); border: 1px solid var(--btn-border); border-radius: 8px; padding: 22px 10px; text-align: center; color: #ddd; font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(5px); user-select: none;}
-        .menu-btn:hover { background: var(--btn-hover); border-color: var(--btn-hover-border); color: #fff; box-shadow: 0 5px 20px rgba(0, 234, 255, 0.1); }
+        
+        /* 🟢 تعديل الـ 3D الخرافي لأزرار اللوحة 🟢 */
+        .menu-btn { 
+            background: linear-gradient(145deg, rgba(20, 26, 40, 0.8), rgba(10, 15, 25, 0.95));
+            border: 1px solid rgba(0, 234, 255, 0.15); 
+            border-radius: 12px; 
+            padding: 25px 15px; 
+            text-align: center; 
+            color: #fff; 
+            font-size: 1.15rem; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            backdrop-filter: blur(10px); 
+            user-select: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0.5; transition: 0.3s;
+        }
+
+        .menu-btn:hover { 
+            border-color: rgba(0, 234, 255, 0.6); 
+            color: #fff; 
+            box-shadow: 0 15px 40px rgba(0, 234, 255, 0.15), inset 0 0 20px rgba(0, 234, 255, 0.05); 
+            text-shadow: 0 0 10px rgba(0, 234, 255, 0.8);
+        }
+        
+        .menu-btn:hover::before { opacity: 1; box-shadow: 0 0 15px var(--cyan); }
 
         .dashboard-top-logo { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 3px solid var(--cyan); box-shadow: 0 0 30px rgba(0, 234, 255, 0.2); margin-bottom: 40px; }
 
@@ -222,25 +254,24 @@
         .close-btn { width: 100%; background: transparent; border: 1px solid #333; color: #888; padding: 10px; margin-top: 5px; cursor: pointer; border-radius: 6px; transition: 0.2s; font-family: var(--font-ar); user-select: none;}
         .close-btn:hover { border-color: var(--red); color: var(--red); }
 
-        /* 🟢 تنسيق نافذة البطاقة 3D المطابق للصورة 🟢 */
+        /* 🟢 تنسيق نافذة البطاقة مسطحة وثابتة (بدون 3D) 🟢 */
         #idCardOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 100000; display: none; justify-content: center; align-items: center; flex-direction: column; animation: fadeIn 0.3s ease; }
         
         .executive-card {
             width: 580px; height: 280px;
-            background: #0b0e14; /* لون داكن جداً مطابق للصورة */
+            background: #0b0e14; 
             border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 10px 0 30px -10px rgba(0,234,255,0.15); /* إضاءة خفيفة يمين */
-            display: flex; flex-direction: row-reverse; /* الصورة يسار والنص يمين */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 10px 0 30px -10px rgba(0,234,255,0.15);
+            display: flex; flex-direction: row-reverse; 
             align-items: center; padding: 30px 40px;
-            position: relative; transform-style: preserve-3d; cursor: crosshair;
+            position: relative;
             border: 1px solid rgba(255,255,255,0.03);
-            border-right: 3px solid var(--cyan); /* خط أزرق على اليمين */
+            border-right: 3px solid var(--cyan);
         }
 
         .card-left {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transform: translateZ(50px);
-            margin-right: auto; /* يدفعه لليسار */
+            margin-right: auto;
         }
 
         .profile-img-wrapper {
@@ -259,25 +290,16 @@
             border-radius: 24px; pointer-events: none;
         }
 
-        .profile-img-card {
-            width: 100%; height: 100%; object-fit: cover; border-radius: 12px;
-            background: #111;
-        }
+        .profile-img-card { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; background: #111; }
 
         .security-badge-icon {
             margin-top: 30px; color: var(--cyan); font-size: 2rem; opacity: 0.8;
             filter: drop-shadow(0 0 10px rgba(0,234,255,0.4));
         }
 
-        .card-right {
-            display: flex; flex-direction: column; align-items: flex-end; text-align: right;
-            transform: translateZ(30px);
-        }
+        .card-right { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
 
-        .sys-title-card {
-            color: #666; font-family: var(--font-en); font-size: 0.95rem;
-            letter-spacing: 3px; font-weight: 800; margin-bottom: 10px;
-        }
+        .sys-title-card { color: #666; font-family: var(--font-en); font-size: 0.95rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 10px; }
 
         .name-card {
             margin: 0; font-size: 3rem; font-weight: 900; color: #fff;
@@ -285,24 +307,15 @@
             text-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        .rank-card {
-            margin: 5px 0 25px 0; color: var(--cyan); font-family: var(--font-en);
-            font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
-        }
+        .rank-card { margin: 5px 0 25px 0; color: var(--cyan); font-family: var(--font-en); font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
 
         .simple-status {
             display: inline-flex; align-items: center; gap: 10px;
-            background: rgba(0, 255, 106, 0.05);
-            border: 1px solid rgba(0, 255, 106, 0.3);
-            padding: 8px 20px; border-radius: 8px;
-            font-family: var(--font-en); font-weight: 800; font-size: 1.1rem; color: var(--green);
-            flex-direction: row-reverse; /* النقطة يمين الكلمة */
+            background: rgba(0, 255, 106, 0.05); border: 1px solid rgba(0, 255, 106, 0.3);
+            padding: 8px 20px; border-radius: 8px; font-family: var(--font-en); font-weight: 800; font-size: 1.1rem; color: var(--green); flex-direction: row-reverse;
         }
 
-        .status-dot-anim {
-            width: 8px; height: 8px; background: var(--green); border-radius: 50%;
-            box-shadow: 0 0 10px var(--green); animation: pulse 2s infinite;
-        }
+        .status-dot-anim { width: 8px; height: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); animation: pulse 2s infinite; }
 
         .card-controls { margin-top: 30px; display: flex; gap: 15px; }
         .card-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-family: var(--font-ar); font-weight: bold; transition: 0.2s; }
@@ -318,7 +331,7 @@
     <div id="imgZoomOverlay" onclick="closeImgZoom()"><img id="zoomedImg" src=""></div>
 
     <div id="idCardOverlay">
-        <div class="executive-card" data-tilt data-tilt-max="12" data-tilt-speed="400" data-tilt-perspective="1000" data-tilt-glare data-tilt-max-glare="0.1">
+        <div class="executive-card">
             
             <div class="card-left">
                 <div class="profile-img-wrapper">
@@ -630,6 +643,10 @@
     </div>
 
     <script>
+        // الأصوات
+        const successSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480272844402196784/vAulQyj.mp3");
+        const errorSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480273461221003444/Y6uHG7S.mp3");
+
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function (e) {
             if (e.keyCode == 123) return false;
@@ -638,10 +655,6 @@
             if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
-
-        // 🟢 روابط الصوت الصحيحة (بدون أخطاء برمجية) 🟢
-        const successSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480272844402196784/vAulQyj.mp3");
-        const errorSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480273461221003444/Y6uHG7S.mp3");
 
         function createStars() {
             const starBg = document.getElementById('star-bg');
@@ -683,7 +696,7 @@
         let isOfficer = false; 
         let myName = "";
         let myDept = "";
-        let myRank = ""; // لحفظ الرتبة وعرضها في البطاقة
+        let myRank = "";
 
         const i18n = {
             ar: {
@@ -795,7 +808,6 @@
             if(document.getElementById('modulesContainer').innerHTML !== '') renderModules();
         }
 
-        // 🟢 نظام تسجيل الدخول مع الأصوات 🟢
         function login() {
             const u = document.getElementById('userInput').value.trim(); const p = document.getElementById('passInput').value.trim();
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; 
@@ -803,7 +815,7 @@
             let foundUser = allUsers.find(x => x.user === u && x.pass === p);
             
             if(foundUser) {
-                successSound.play().catch(e => console.log(e)); // تشغيل الترحيب
+                successSound.play().catch(e => console.log(e));
                 const ls = document.getElementById('loginScreen'); ls.style.opacity = '0';
                 setTimeout(() => {
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
@@ -811,24 +823,22 @@
                     myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = 999; 
                     isOfficer = configOfficers.includes(foundUser.rank); 
                     myName = foundUser.name;
-                    myRank = foundUser.rank; // حفظ الرتبة
+                    myRank = foundUser.rank;
                     myDept = foundUser.dept || "";
 
                     document.getElementById('rankNameDisp').innerText = myDept ? `${myName} (${myDept})` : myName; 
-
-                    // تحميل صورة الهوية المحفوظة
+                    
                     const savedImg = localStorage.getItem('user_id_img_' + myName);
                     if(savedImg) document.getElementById('cardImage').src = savedImg;
 
                     renderModules();
                 }, 100);
             } else { 
-                errorSound.play().catch(e => console.log(e)); // تشغيل الرفض
+                errorSound.play().catch(e => console.log(e));
                 document.getElementById('loginError').style.display = 'block'; 
             }
         }
 
-        // 🟢 دوال التحكم في بطاقة الهوية الـ 3D 🟢
         function openIdCard() {
             document.getElementById('cardNameDisp').innerText = myName;
             document.getElementById('cardRankDisp').innerText = myRank;
@@ -853,9 +863,10 @@
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
                 if (m.reqOfficer && !isOfficer) return; 
-                c.innerHTML += `<div class="menu-btn" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
+                // 🟢 هنا عدلنا الـ 3D حق الأزرار 🟢
+                c.innerHTML += `<div class="menu-btn" data-tilt data-tilt-max="20" data-tilt-speed="400" data-tilt-perspective="500" data-tilt-scale="1.05" data-tilt-glare data-tilt-max-glare="0.4" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
-            VanillaTilt.init(document.querySelectorAll(".menu-btn, .executive-card"));
+            VanillaTilt.init(document.querySelectorAll(".menu-btn"));
         }
 
         function openMod(id) {
