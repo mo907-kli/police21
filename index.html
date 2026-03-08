@@ -1046,14 +1046,82 @@
             document.getElementById('customAlertOverlay').style.display = 'flex'; 
         }
         
-        function openAppModal() { if(db.settings && db.settings.policeOpen === false) { showCustomAlert("عذراً", "التقديم لشرطة تايتنز مغلق حالياً من قبل الإدارة.", false); return; } document.getElementById('appModal').style.display = 'flex'; }
+        // 🟢 دوال التقديم والتحقق من البصمة (الذاكرة المحلية) 🟢
+        function openAppModal() { 
+            if(db.settings && db.settings.policeOpen === false) { showCustomAlert("عذراً", "التقديم لشرطة تايتنز مغلق حالياً من قبل الإدارة.", false); return; } 
+            
+            // التحقق من البصمة
+            if(localStorage.getItem('policeAppSubmitted') === 'true') { 
+                showCustomAlert("تنبيه", "لقد قمت بتقديم طلب لشرطة تايتنز مسبقاً! يرجى انتظار رد الإدارة.", false); 
+                return; 
+            }
+            
+            document.getElementById('appModal').style.display = 'flex'; 
+        }
+
         function closeAppModal() { document.getElementById('appModal').style.display = 'none'; }
-        function openSelfAppModal() { if(db.settings && db.settings.selfOpen === false) { showCustomAlert("عذراً", "التقديم لقدم نفسك مغلق حالياً من قبل الإدارة.", false); return; } document.getElementById('selfAppModal').style.display = 'flex'; }
+        
+        function openSelfAppModal() { 
+            if(db.settings && db.settings.selfOpen === false) { showCustomAlert("عذراً", "التقديم لقدم نفسك مغلق حالياً من قبل الإدارة.", false); return; } 
+            
+            // التحقق من البصمة
+            if(localStorage.getItem('selfAppSubmitted') === 'true') { 
+                showCustomAlert("تنبيه", "لقد قمت بتقديم طلب 'قدم نفسك' مسبقاً! يرجى انتظار رد الإدارة.", false); 
+                return; 
+            }
+            
+            document.getElementById('selfAppModal').style.display = 'flex'; 
+        }
+
         function closeSelfAppModal() { document.getElementById('selfAppModal').style.display = 'none'; document.getElementById('self-file-name').innerText = 'إرفاق صورة (اختياري)'; document.getElementById('self-file-name').style.color = '#888'; }
 
-        function submitApplication() { const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim(); if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!", false); return; } db.applications = cleanArray(db.applications); db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' }); saveDB(); closeAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.", true); ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); }
-        function submitSelfApplication() { const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim(); const fileInput = document.getElementById('selfFile'); if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!", false); return; } let fileData = null; if (fileInput.files && fileInput.files[0]) { if(fileInput.files[0].size > 3 * 1024 * 1024) return showCustomAlert("خطأ", "حجم الصورة كبير جداً.", false); const reader = new FileReader(); reader.onload = function(e) { fileData = { name: fileInput.files[0].name, data: e.target.result }; saveSelfApp(n, d, a, exp, reason, fileData); }; reader.readAsDataURL(fileInput.files[0]); } else { saveSelfApp(n, d, a, exp, reason, null); } }
-        function saveSelfApp(n, d, a, exp, reason, fileData) { db.applications = cleanArray(db.applications); db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' }); saveDB(); closeSelfAppModal(); showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.", true); ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = ''); document.getElementById('selfFile').value = ''; }
+        function submitApplication() { 
+            const n = document.getElementById('appName').value.trim(); const d = document.getElementById('appDiscord').value.trim(); const a = document.getElementById('appAge').value.trim(); const exp = document.getElementById('appExp').value.trim(); const reason = document.getElementById('appReason').value.trim(); 
+            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!", false); return; } 
+            
+            db.applications = cleanArray(db.applications); 
+            db.applications.push({ type: 'police', name: n, discord: d, age: a, exp: exp, reason: reason, date: new Date().toLocaleDateString(), status: 'pending' }); 
+            saveDB(); 
+            
+            // 🟢 زرع البصمة في جهاز المستخدم عشان ما يقدم مرة ثانية 🟢
+            localStorage.setItem('policeAppSubmitted', 'true');
+            
+            closeAppModal(); 
+            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته من قبل القيادة قريباً.", true); 
+            ['appName','appDiscord','appAge','appExp','appReason'].forEach(id => document.getElementById(id).value = ''); 
+        }
+
+        function submitSelfApplication() { 
+            const n = document.getElementById('selfName').value.trim(); const d = document.getElementById('selfDiscord').value.trim(); const a = document.getElementById('selfAge').value.trim(); const exp = document.getElementById('selfExp').value.trim(); const reason = document.getElementById('selfReason').value.trim(); const fileInput = document.getElementById('selfFile'); 
+            if(!n || !d || !a) { showCustomAlert("خطأ", "يرجى تعبئة الحقول الأساسية (الاسم، الديسكورد، العمر)!", false); return; } 
+            
+            let fileData = null; 
+            if (fileInput.files && fileInput.files[0]) { 
+                if(fileInput.files[0].size > 3 * 1024 * 1024) return showCustomAlert("خطأ", "حجم الصورة كبير جداً.", false); 
+                const reader = new FileReader(); 
+                reader.onload = function(e) { 
+                    fileData = { name: fileInput.files[0].name, data: e.target.result }; 
+                    saveSelfApp(n, d, a, exp, reason, fileData); 
+                }; 
+                reader.readAsDataURL(fileInput.files[0]); 
+            } else { 
+                saveSelfApp(n, d, a, exp, reason, null); 
+            } 
+        }
+
+        function saveSelfApp(n, d, a, exp, reason, fileData) { 
+            db.applications = cleanArray(db.applications); 
+            db.applications.push({ type: 'self', name: n, discord: d, age: a, exp: exp, reason: reason, file: fileData, date: new Date().toLocaleDateString(), status: 'pending' }); 
+            saveDB(); 
+            
+            // 🟢 زرع البصمة في جهاز المستخدم عشان ما يقدم مرة ثانية 🟢
+            localStorage.setItem('selfAppSubmitted', 'true');
+            
+            closeSelfAppModal(); 
+            showCustomAlert("اكتمل التقديم", "تم إرسال تقديمك بنجاح! سيتم مراجعته قريباً.", true); 
+            ['selfName','selfDiscord','selfAge','selfExp','selfReason'].forEach(id => document.getElementById(id).value = ''); 
+            document.getElementById('selfFile').value = ''; 
+        }
         
         function switchPublicTab(tabId, el) { document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active')); if(el) el.classList.add('active'); if (tabId === 'home' && document.getElementById('homeTab').style.display === 'flex') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; } document.getElementById('homeTab').style.display = 'none'; document.getElementById('rulesTab').style.display = 'none'; document.getElementById('jobsTab').style.display = 'none'; document.getElementById('foundersTab').style.display = 'none'; document.getElementById(tabId + 'Tab').style.display = 'flex'; window.scrollTo({ top: 0, behavior: 'auto' }); }
         function toggleAccordion(element) { const item = element.parentElement; const content = item.querySelector('.accordion-content'); const isActive = item.classList.contains('active'); document.querySelectorAll('.accordion-item').forEach(otherItem => { otherItem.classList.remove('active'); otherItem.querySelector('.accordion-content').style.maxHeight = null; otherItem.querySelector('.acc-icon').innerText = '+'; }); if (!isActive) { item.classList.add('active'); content.style.maxHeight = content.scrollHeight + "px"; element.querySelector('.acc-icon').innerText = '-'; } }
