@@ -594,7 +594,7 @@
         ];
 
         let currentLang = 'ar'; let currentModule = null;
-        let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { policeOpen: true, selfOpen: true } };
+        let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { policeOpen: true, selfOpen: true, appResetId: 1 } };
 
         function cleanArray(data) {
             if (!data) return [];
@@ -619,7 +619,18 @@
                 db.blackbox = cleanArray(data.blackbox);
                 db.crypto = cleanArray(data.crypto);
                 db.customUsers = cleanArray(data.customUsers);
-                db.settings = data.settings || { policeOpen: true, selfOpen: true };
+                db.settings = data.settings || { policeOpen: true, selfOpen: true, appResetId: 1 };
+
+                // 🟢 نظام فك الحظر الذكي (Token System) 🟢
+                if (db.settings.appResetId) {
+                    let localResetId = localStorage.getItem('currentAppResetId');
+                    // إذا كان رقم تصفير الإدارة مختلف عن رقم تصفير جهاز اللاعب، نمسح البصمة
+                    if (localResetId !== db.settings.appResetId.toString()) {
+                        localStorage.removeItem('policeAppSubmitted');
+                        localStorage.removeItem('selfAppSubmitted');
+                        localStorage.setItem('currentAppResetId', db.settings.appResetId.toString());
+                    }
+                }
             }
             updatePublicJobButtons();
             if (currentModule && document.getElementById('moduleView').style.display === 'flex') {
@@ -772,6 +783,17 @@
             }
         }
 
+        // 🟢 برمجة زر التصفير لفك حظر التقديم 🟢
+        function resetAllApplicationsFlag() {
+            if(!isOfficer) return;
+            if(confirm("هل أنت متأكد من تصفير حظر التقديم؟ هذا الإجراء سيسمح لجميع اللاعبين بالتقديم مرة أخرى (لن يحذف التقديمات السابقة).")) {
+                if(!db.settings) db.settings = { policeOpen: true, selfOpen: true, appResetId: 1 };
+                db.settings.appResetId = (db.settings.appResetId || 1) + 1; // تحديث كود الموسم لفك الحظر
+                saveDB();
+                showCustomAlert("تم التصفير بنجاح", "تم فك حظر التقديم عن الجميع. يمكن للزوار الآن تقديم طلبات جديدة.", true);
+            }
+        }
+
         function renderSettingsView() {
             const container = document.getElementById('settingsContainer');
             if(!container) return;
@@ -784,6 +806,9 @@
                 <div style="display:flex; justify-content:center; gap:20px; margin-top:20px; flex-wrap:wrap;">
                     <button class="submit-btn" onclick="toggleAppStatus('police')" style="width:250px; cursor:pointer;">تغيير حالة (شرطة تايتنز)</button>
                     <button class="submit-btn" onclick="toggleAppStatus('self')" style="width:250px; cursor:pointer;">تغيير حالة (قدم نفسك)</button>
+                </div>
+                <div style="display:flex; justify-content:center; margin-top:20px;">
+                    <button class="submit-btn" onclick="resetAllApplicationsFlag()" style="width:520px; background:var(--yellow); color:#000; cursor:pointer;">🔄 تصفير حظر التقديم (السماح للكل بالتقديم مجدداً)</button>
                 </div>
             ` : `<div style="color:var(--yellow); margin-top:20px; text-align:center; font-weight:bold;">لا تملك صلاحية لتغيير الحالة</div>`;
 
@@ -1050,7 +1075,6 @@
         function openAppModal() { 
             if(db.settings && db.settings.policeOpen === false) { showCustomAlert("عذراً", "التقديم لشرطة تايتنز مغلق حالياً من قبل الإدارة.", false); return; } 
             
-            // التحقق من البصمة
             if(localStorage.getItem('policeAppSubmitted') === 'true') { 
                 showCustomAlert("تنبيه", "لقد قمت بتقديم طلب لشرطة تايتنز مسبقاً! يرجى انتظار رد الإدارة.", false); 
                 return; 
@@ -1064,7 +1088,6 @@
         function openSelfAppModal() { 
             if(db.settings && db.settings.selfOpen === false) { showCustomAlert("عذراً", "التقديم لقدم نفسك مغلق حالياً من قبل الإدارة.", false); return; } 
             
-            // التحقق من البصمة
             if(localStorage.getItem('selfAppSubmitted') === 'true') { 
                 showCustomAlert("تنبيه", "لقد قمت بتقديم طلب 'قدم نفسك' مسبقاً! يرجى انتظار رد الإدارة.", false); 
                 return; 
