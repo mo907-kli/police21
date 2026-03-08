@@ -677,6 +677,10 @@
             if(document.getElementById('modulesContainer').innerHTML !== '') renderModules();
         }
 
+        // 🟢 روابط الأصوات المباشرة 🟢
+        const successSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480272844402196784/vAulQyj.mp3?ex=69af1304&is=69adc184&hm=675330481f307cad0ca148c0b25612cf5ed30d9a22775e0ec20241d9f23b41a6&");
+        const errorSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480273461221003444/Y6uHG7S.mp3?ex=69af1397&is=69adc217&hm=452af6d327f173b55664fed4dec274981850708894d094e7180e1f9ff1416063&");
+
         function login() {
             const u = document.getElementById('userInput').value.trim(); const p = document.getElementById('passInput').value.trim();
             let configU = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : []; 
@@ -684,6 +688,9 @@
             let foundUser = allUsers.find(x => x.user === u && x.pass === p);
             
             if(foundUser) {
+                // تشغيل صوت الدخول الناجح
+                successSound.play().catch(e => console.log("خطأ في تشغيل الصوت:", e));
+
                 const ls = document.getElementById('loginScreen'); ls.style.opacity = '0';
                 setTimeout(() => {
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
@@ -698,6 +705,8 @@
                     renderModules();
                 }, 100);
             } else { 
+                // تشغيل صوت الدخول الخاطئ
+                errorSound.play().catch(e => console.log("خطأ في تشغيل الصوت:", e));
                 document.getElementById('loginError').style.display = 'block'; 
             }
         }
@@ -784,6 +793,14 @@
                 if(currentModule.hasImage) inpArea.innerHTML += `<div class="file-input-wrapper"><span id="img-file-name" class="file-label-text">إرفاق صورة</span><input type="file" id="inp-image" accept="image/*" onchange="document.getElementById('img-file-name').innerText = this.files[0].name; document.getElementById('img-file-name').style.color = '#00eaff';"></div>`;
                 renderRecords();
             }
+        }
+
+        function resetAllApplicationsFlag() {
+            if(!isOfficer) return;
+            if(!db.settings) db.settings = { policeOpen: true, selfOpen: true, appResetId: 1 };
+            db.settings.appResetId = (db.settings.appResetId || 1) + 1; 
+            saveDB();
+            showCustomAlert("تم الرستارت بنجاح", "تم فك حظر التقديم عن الجميع. يمكن للزوار الآن تقديم طلبات جديدة.", true);
         }
 
         function renderSettingsView() {
