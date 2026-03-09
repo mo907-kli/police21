@@ -36,15 +36,15 @@
         body { user-select: none; background: #020305; color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
-        /* 🟢 1. خلفية المطر السينمائي (Deep26) 🟢 */
-        #bg-rain { position: fixed; inset: 0; z-index: -5; pointer-events: none; }
-        #rain-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.6; }
-        .rain-glow { position: absolute; bottom: -20%; left: 0; width: 100%; height: 50%; background: linear-gradient(to top, rgba(138, 43, 226, 0.15) 0%, rgba(0, 234, 255, 0.05) 50%, transparent 100%); filter: blur(20px); }
+        /* 🟢 1. خلفية النجوم 🟢 */
+        #star-bg { position: fixed; inset: 0; z-index: -5; pointer-events: none; overflow: hidden; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); }
+        @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
 
         /* 🟢 2. انعكاس براقات الشرطة 🟢 */
         #bg-lights { position: fixed; inset: 0; z-index: -4; pointer-events: none; overflow: hidden; }
-        .light-red { position: absolute; top: -20%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, transparent 70%); animation: pulseRed 2s infinite alternate ease-in-out; mix-blend-mode: screen; }
-        .light-blue { position: absolute; bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(0,150,255,0.1) 0%, transparent 70%); animation: pulseBlue 2s infinite alternate ease-in-out; mix-blend-mode: screen; }
+        .light-red { position: absolute; top: -30%; left: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(255, 0, 40, 0.25) 0%, transparent 70%); animation: pulseRed 1.5s infinite alternate ease-in-out; mix-blend-mode: screen; }
+        .light-blue { position: absolute; bottom: -30%; right: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(0, 160, 255, 0.25) 0%, transparent 70%); animation: pulseBlue 1.5s infinite alternate ease-in-out; mix-blend-mode: screen; }
         @keyframes pulseRed { 0% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
         @keyframes pulseBlue { 0% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.3; transform: scale(0.9); } }
 
@@ -291,10 +291,7 @@
 
     <script src="config.js"></script>
 
-    <div id="bg-rain">
-        <canvas id="rain-canvas"></canvas>
-        <div class="rain-glow"></div>
-    </div>
+    <div id="star-bg"></div>
     <div id="bg-lights">
         <div class="light-red"></div>
         <div class="light-blue"></div>
@@ -618,7 +615,7 @@
     </div>
 
     <script>
-        // 🟢 حل مشكلة سطر 498 اللي بالصورة 🟢
+        // 🟢 روابط الصوت (بدون أخطاء) 🟢
         const successSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480272844402196784/vAulQyj.mp3");
         const errorSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480273461221003444/Y6uHG7S.mp3");
 
@@ -631,48 +628,25 @@
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
         };
 
-        // 🟢 سكربت إنشاء المطر وخطوط المطاردة 🟢
-        const canvasRain = document.getElementById('rain-canvas');
-        const ctxRain = canvasRain.getContext('2d');
-        canvasRain.width = window.innerWidth;
-        canvasRain.height = window.innerHeight;
-
-        const rainArray = [];
-        for (let i = 0; i < 150; i++) {
-            rainArray.push({
-                x: Math.random() * canvasRain.width,
-                y: Math.random() * canvasRain.height,
-                length: Math.random() * 15 + 10,
-                speed: Math.random() * 5 + 2,
-                opacity: Math.random() * 0.5 + 0.1
-            });
-        }
-
-        function drawRain() {
-            ctxRain.clearRect(0, 0, canvasRain.width, canvasRain.height);
-            ctxRain.strokeStyle = 'rgba(0, 234, 255, 0.5)';
-            ctxRain.lineWidth = 1;
-            ctxRain.lineCap = 'round';
-
-            for (let i = 0; i < rainArray.length; i++) {
-                let p = rainArray[i];
-                ctxRain.beginPath();
-                ctxRain.moveTo(p.x, p.y);
-                ctxRain.lineTo(p.x, p.y + p.length);
-                ctxRain.globalAlpha = p.opacity;
-                ctxRain.stroke();
-
-                p.y += p.speed;
-                if (p.y > canvasRain.height) {
-                    p.y = -p.length;
-                    p.x = Math.random() * canvasRain.width;
+        // 🟢 دالة إنشاء النجوم وخطوط المطاردة 🟢
+        function createBackgroundEffects() {
+            const starBg = document.getElementById('star-bg');
+            if(starBg) {
+                starBg.innerHTML = '';
+                for (let i = 0; i < 150; i++) {
+                    let star = document.createElement('div');
+                    star.className = 'star';
+                    let size = Math.random() * 3 + 1; 
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    star.style.left = Math.random() * 100 + 'vw';
+                    star.style.top = Math.random() * 100 + 'vh';
+                    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    star.style.animationDelay = (Math.random() * 5) + 's';
+                    starBg.appendChild(star);
                 }
             }
-            requestAnimationFrame(drawRain);
-        }
-        drawRain();
 
-        function createPursuitLines() {
             const pursuitBg = document.getElementById('bg-pursuit');
             if(pursuitBg) {
                 pursuitBg.innerHTML = '';
@@ -687,13 +661,7 @@
                 }
             }
         }
-        createPursuitLines();
-
-        window.addEventListener('resize', () => {
-            canvasRain.width = window.innerWidth;
-            canvasRain.height = window.innerHeight;
-            createPursuitLines();
-        });
+        createBackgroundEffects();
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5PL_fJEjiJVQS8rnx4m8j9uQNsILcQvs",
