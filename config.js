@@ -61,7 +61,6 @@ const ConfigUsers = [
     { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
     { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
     { user: "ylt0", pass: "123", name: "جوزيف مورفي", rank: "A'Chief Of Police", dept: "" },
-    { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Police Commander", dept: "" }, // ملاحظة: هذا اليوزر مكرر في لستتك، النظام سيدخل على أول واحد
     { user: "t1iq", pass: "123", name: "سفر الدوسري", rank: "Police Commander", dept: "" },
     { user: "3ljb", pass: "123", name: "ميشيل بيتر", rank: "Police Commander", dept: "" },
     { user: "basku0", pass: "123", name: "سايكو دام", rank: "Police Commander", dept: "" },
@@ -96,3 +95,4 @@ const ConfigUsers = [
     { user: "9_x", pass: "123", name: "وليام بيتر", rank: "Lieutenant", dept: "" },
     { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" }
 ];
+
