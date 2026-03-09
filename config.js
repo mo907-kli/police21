@@ -1,44 +1,57 @@
-// 🟢 قائمة رتب الضباط (القيادة العليا اللي لهم صلاحيات الإدارة والقبول) 🟢
+// ==========================================
+// 1. إعدادات الرتب (Officers - الضباط والقيادة العليا)
+// (مهم جداً: الترتيب من الأعلى للأسفل لتحديد من يتحكم بمن)
+// ==========================================
 const OfficerRanks = [
-    "Minister of Interior", 
+    "Minister of Interior",
     "Deputy Minister of Interior",
-    "A. Minister of Interior", 
-    "Chief Of Police",          // 🟢 تم الإضافة
-    "Deputy Chief of Police",   // 🟢 تم الإضافة
-    "A'Chief Of Police",        // 🟢 تم الإضافة
-    "Police Commander", 
-    "L.S.P.D Chief", 
-    "Deputy L.S.P.D Chief", 
+    "A. Minister of Interior",
+    "Chief Of Police",
+    "Deputy Chief of Police",
+    "A'Chief Of Police",
+    "Police Commander",
+    "L.S.P.D Chief",
+    "Deputy L.S.P.D Chief",
     "High Commander",
     "General",
-    "Colonel", 
-    "Major", 
-    "Captain", 
-    "First Lieutenant", 
+    "Colonel",
+    "Major",
+    "Captain",
+    "First Lieutenant",
     "Lieutenant"
 ];
 
-// 🟢 قائمة رتب الأفراد (ما لهم صلاحيات إدارية، بس يشوفون الأقسام العادية) 🟢
+// ==========================================
+// 2. إعدادات الرتب (Enlisted - الأفراد)
+// ==========================================
 const EnlistedRanks = [
-    "Staff Sergeant", 
-    "First Sergeant", 
-    "Sergeant", 
-    "Senior Lead Officer", 
-    "Senior Officer", 
-    "Officer III", 
-    "Officer II", 
-    "Officer I", 
-    "Solo Cadet", 
+    "Staff Sergeant",
+    "First Sergeant",
+    "Sergeant",
+    "Senior Lead Officer",
+    "Senior Officer",
+    "Officer III",
+    "Officer II",
+    "Officer I",
+    "Solo Cadet",
     "Cadet"
 ];
 
-// 🟢 قائمة الرتب الثنائية / الأقسام 🟢
+// ==========================================
+// 3. الأقسام والرتب الثنائية (Departments)
+// ==========================================
 const SecondaryRanks = [
-    "Police Academy",
-    "Internal Affairs"
+    "Police Academy", // مهم جداً لإخفاء التقديمات عن هذا القسم
+    "S.W.A.T",
+    "Traffic Division",
+    "Detective Bureau",
+    "Internal Affairs",
+    "Air Support"
 ];
 
-// 🟢 الحسابات الأساسية للنظام 🟢
+// ==========================================
+// 4. حسابات المستخدمين الأساسية (System Users)
+// ==========================================
 const ConfigUsers = [
     { user: "admin", pass: "123", name: "dev", rank: "Minister of Interior", dept: "" },
     { user: "wx8w", pass: "123", name: "جاهد المجاهد", rank: "Minister of Interior", dept: "" },
@@ -48,7 +61,7 @@ const ConfigUsers = [
     { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
     { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
     { user: "ylt0", pass: "123", name: "جوزيف مورفي", rank: "A'Chief Of Police", dept: "" },
-    { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Police Commander", dept: "" },
+    { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Police Commander", dept: "" }, // ملاحظة: هذا اليوزر مكرر في لستتك، النظام سيدخل على أول واحد
     { user: "t1iq", pass: "123", name: "سفر الدوسري", rank: "Police Commander", dept: "" },
     { user: "3ljb", pass: "123", name: "ميشيل بيتر", rank: "Police Commander", dept: "" },
     { user: "basku0", pass: "123", name: "سايكو دام", rank: "Police Commander", dept: "" },
@@ -81,10 +94,5 @@ const ConfigUsers = [
     { user: "i.2lk", pass: "123", name: "سعود حمد", rank: "Lieutenant", dept: "" },
     { user: "595h", pass: "123", name: "بتال", rank: "Lieutenant", dept: "" },
     { user: "9_x", pass: "123", name: "وليام بيتر", rank: "Lieutenant", dept: "" },
-    { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" },
-    
+    { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" }
 ];
-
-
-
-
