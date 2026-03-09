@@ -36,19 +36,16 @@
         body { user-select: none; background: #020305; color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
-        /* 🟢 1. خلفية النجوم 🟢 */
         #star-bg { position: fixed; inset: 0; z-index: -5; pointer-events: none; overflow: hidden; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); }
         @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
 
-        /* 🟢 2. انعكاس براقات الشرطة 🟢 */
         #bg-lights { position: fixed; inset: 0; z-index: -4; pointer-events: none; overflow: hidden; }
         .light-red { position: absolute; top: -30%; left: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(255, 0, 40, 0.25) 0%, transparent 70%); animation: pulseRed 1.5s infinite alternate ease-in-out; mix-blend-mode: screen; }
         .light-blue { position: absolute; bottom: -30%; right: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(0, 160, 255, 0.25) 0%, transparent 70%); animation: pulseBlue 1.5s infinite alternate ease-in-out; mix-blend-mode: screen; }
         @keyframes pulseRed { 0% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
         @keyframes pulseBlue { 0% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.3; transform: scale(0.9); } }
 
-        /* 🟢 3. إحساس المطاردة الليلية (الخطوط) 🟢 */
         #bg-pursuit { position: fixed; inset: 0; z-index: -3; pointer-events: none; overflow: hidden; }
         .speed-line { position: absolute; width: 2px; height: 150px; background: linear-gradient(to bottom, transparent, rgba(0, 234, 255, 0.5), transparent); filter: blur(1px); animation: speedFall linear infinite; }
         .speed-line.red { background: linear-gradient(to bottom, transparent, rgba(255, 51, 51, 0.5), transparent); }
@@ -78,7 +75,6 @@
         #homeTab { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease; }
         #rulesTab, #jobsTab, #foundersTab { display: none; flex-direction: column; align-items: center; width: 100%; background: transparent; padding-bottom: 100px; animation: fadeIn 0.3s ease;}
         
-        /* 🟢 إزالة الصور من البنرات 🟢 */
         .hero-section { display: flex; align-items: center; justify-content: center; position: relative; min-height: calc(100vh - 90px); width: 100%; overflow: hidden; background: radial-gradient(circle at center, rgba(0, 234, 255, 0.05) 0%, transparent 60%); }
         .hero-content { position: relative; z-index: 3; text-align: center; max-width: 800px; padding: 40px; }
         .hero-content h1 { font-size: 5rem; color: #fff; font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 30px rgba(0,234,255,0.4); }
@@ -99,7 +95,6 @@
         .comm-link { color: #fff; font-weight: bold; font-size: 1.1rem; cursor: pointer; text-decoration: none; transition: 0.2s; }
         .comm-link:hover { color: var(--cyan); }
 
-        /* 🟢 إزالة الصور من العناوين العلوية 🟢 */
         .animated-banner { position: relative; width: 100%; padding: 100px 20px; text-align: center; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, rgba(0, 234, 255, 0.03) 0%, transparent 70%); }
         .anim-content { position: relative; z-index: 3; }
         .anim-title { font-size: 3.5rem; color: #fff; font-weight: 800; margin-bottom: 15px; text-shadow: 0 0 20px rgba(0,234,255,0.4);}
@@ -155,7 +150,6 @@
         .alert-title { color: #fff; font-size: 1.8rem; font-weight: bold; margin-bottom: 15px; }
         .alert-desc { color: #aaa; font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; white-space: pre-wrap; } 
         
-        /* 🟢 شاشة الدخول مع الدائرة النابضة 🟢 */
         #loginScreen { position: fixed; inset: 0; background: rgba(3, 5, 9, 0.85); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(15px); transition: opacity 0.15s ease;}
         .login-container { width: 400px; padding: 40px; background: #0b0e14; border: 1px solid var(--cyan); border-radius: 12px; text-align: center; box-shadow: 0 10px 50px rgba(0,0,0,0.8); animation: slideUpFade 0.3s ease-out forwards; }
         
@@ -175,7 +169,6 @@
         .back-login-btn { background: transparent; border: none; color: #888; margin-top: 20px; cursor: pointer; font-family: var(--font-ar); text-decoration: underline; font-size: 0.95rem; transition: 0.2s; user-select: none;}
         .back-login-btn:hover { color: #fff; }
 
-        /* لوحة التحكم */
         #mainWrapper { position: fixed; inset: 0; z-index: 2; display: none; flex: 1; flex-direction: column; transition: opacity 0.15s ease; height: 100vh; overflow: hidden; background: transparent; }
         header { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; z-index: 10; border-bottom: 1px solid var(--glass-border); flex-shrink: 0; background: rgba(3,5,9,0.8); backdrop-filter: blur(10px);}
         .header-side { display: flex; gap: 10px; align-items: center; }
@@ -285,62 +278,7 @@
 </head>
 <body id="appBody">
 
-    <script>
-        const OfficerRanks = [
-            "Minister of Interior", "Deputy Minister of Interior", "A. Minister of Interior", "Chief Of Police", "Deputy Chief of Police", "A'Chief Of Police",
-            "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "High Commander", "General", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"
-        ];
-        const EnlistedRanks = [
-            "Staff Sergeant", "First Sergeant", "Sergeant", "Senior Lead Officer", "Senior Officer", "Officer III", "Officer II", "Officer I", "Solo Cadet", "Cadet"
-        ];
-        const SecondaryRanks = [
-            "Police Academy", "S.W.A.T", "Traffic Division", "Detective Bureau", "Internal Affairs", "Air Support"
-        ];
-        const ConfigUsers = [
-            { user: "admin", pass: "123", name: "dev", rank: "Minister of Interior", dept: "" },
-            { user: "wx8w", pass: "123", name: "جاهد المجاهد", rank: "Minister of Interior", dept: "" },
-            { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Deputy Minister of Interior", dept: "" },
-            { user: "north__7", pass: "123", name: "جون هنتر", rank: "A. Minister of Interior", dept: "" },
-            { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "A. Minister of Interior", dept: "" },
-            { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
-            { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
-            { user: "ylt0", pass: "123", name: "جوزيف مورفي", rank: "A'Chief Of Police", dept: "" },
-            { user: "ia9q_2", pass: "123", name: "محمد المطيري 2", rank: "Police Commander", dept: "" },
-            { user: "t1iq", pass: "123", name: "سفر الدوسري", rank: "Police Commander", dept: "" },
-            { user: "3ljb", pass: "123", name: "ميشيل بيتر", rank: "Police Commander", dept: "" },
-            { user: "basku0", pass: "123", name: "سايكو دام", rank: "Police Commander", dept: "" },
-            { user: "iilother", pass: "123", name: "لوثر ماركوس", rank: "L.S.P.D Chief", dept: "" },
-            { user: "mohammed9117956", pass: "123", name: "محمد الخالدي", rank: "Deputy L.S.P.D Chief", dept: "" },
-            { user: "neax7", pass: "123", name: "سيف الدوسري", rank: "High Commander", dept: "" },
-            { user: "9rth", pass: "123", name: "جاكس ريبر", rank: "High Commander", dept: "" },
-            { user: "4lmd", pass: "123", name: "صقر المجد", rank: "High Commander", dept: "" },
-            { user: "3njw.1_68178", pass: "123", name: "ليون ماركو", rank: "High Commander", dept: "" },
-            { user: "biggboss_055", pass: "123", name: "سعيد احمد", rank: "High Commander", dept: "" },
-            { user: "kq_0", pass: "123", name: "تركي دميتري", rank: "High Commander", dept: "" },
-            { user: "_2gg", pass: "123", name: "مارك بانثر", rank: "High Commander", dept: "" },
-            { user: "idarls", pass: "123", name: "سلفر ستالون", rank: "General", dept: "" },
-            { user: "q2_rr", pass: "123", name: "تانا الشمري", rank: "General", dept: "" },
-            { user: "Saeed Faiz", pass: "123", name: "معالي سعيد فايز", rank: "Colonel", dept: "" },
-            { user: "alhtlani55", pass: "123", name: "نواف الهتلاني", rank: "Major", dept: "" },
-            { user: "qgr9", pass: "123", name: "كارلوس الشمري", rank: "Major", dept: "" },
-            { user: "ah.46", pass: "123", name: "مشبب العتيبي", rank: "Captain", dept: "" },
-            { user: "tav.l7", pass: "123", name: "تاف مارفل", rank: "Captain", dept: "" },
-            { user: "2m.ulster", pass: "123", name: "نواف عبدالله", rank: "Captain", dept: "" },
-            { user: "w.ssk", pass: "123", name: "ناصر  اسلا", rank: "First Lieutenant", dept: "" },
-            { user: "i_s7s", pass: "123", name: "حسين الحازمي", rank: "First Lieutenant", dept: "" },
-            { user: "ple.6", pass: "123", name: "عسكر الرشيدي", rank: "First Lieutenant", dept: "" },
-            { user: "z4.e", pass: "123", name: "جهيمان العتيبي", rank: "First Lieutenant", dept: "" },
-            { user: "lwx_515", pass: "123", name: "مشعل ثامر", rank: "First Lieutenant", dept: "" },
-            { user: "9fsl", pass: "123", name: "فيصل بن سلمان", rank: "First Lieutenant", dept: "" },
-            { user: "3hwe", pass: "123", name: "راد السبيعي", rank: "Lieutenant", dept: "" },
-            { user: "ire.sh", pass: "123", name: "خالد احمد", rank: "Lieutenant", dept: "" },
-            { user: "r_0c", pass: "123", name: "هزاع إلتشابو", rank: "Lieutenant", dept: "" },
-            { user: "i.2lk", pass: "123", name: "سعود حمد", rank: "Lieutenant", dept: "" },
-            { user: "595h", pass: "123", name: "بتال", rank: "Lieutenant", dept: "" },
-            { user: "9_x", pass: "123", name: "وليام بيتر", rank: "Lieutenant", dept: "" },
-            { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" }
-        ];
-    </script>
+    <script src="config.js"></script>
 
     <div id="star-bg"></div>
     <div id="bg-lights">
@@ -717,12 +655,10 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🟢 مصفوفة الأقسام مع خاصية السماح للأكاديمية 🟢
+        // 🟢 مصفوفة الأقسام مع خاصية (allowAcademy: true) للأقسام اللي نبي نعطيها تصريح استثنائي 🟢
         const modules = [
-            // أضفنا allowAcademy: true للأقسام اللي نبي الأكاديمية تشوفها وتتحكم فيها!
             { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true, allowAcademy: true },
             { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true, allowAcademy: true },
-            
             { id: 'reports', i18n_t: 'm_rep', isReportForm: true },
             { id: 'crypto', i18n_t: 'm_cry', isCrypto: true },
             { id: 'blackbox', i18n_t: 'm_box', inputsAr: ['رقم السجل', 'كود الوصول'] },
@@ -744,67 +680,13 @@
         let myName = "";
         let myDept = "";
         let myRank = "";
-
-        const OfficerRanks = [
-            "Minister of Interior", "Deputy Minister of Interior", "A. Minister of Interior", "Chief Of Police", "Deputy Chief of Police", "A'Chief Of Police",
-            "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "High Commander", "General", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"
-        ];
-        const EnlistedRanks = [
-            "Staff Sergeant", "First Sergeant", "Sergeant", "Senior Lead Officer", "Senior Officer", "Officer III", "Officer II", "Officer I", "Solo Cadet", "Cadet"
-        ];
-        const SecondaryRanks = [
-            "Police Academy", "S.W.A.T", "Traffic Division", "Detective Bureau", "Internal Affairs", "Air Support"
-        ];
-        const ConfigUsers = [
-            { user: "admin", pass: "123", name: "dev", rank: "Minister of Interior", dept: "" },
-            { user: "wx8w", pass: "123", name: "جاهد المجاهد", rank: "Minister of Interior", dept: "" },
-            { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Deputy Minister of Interior", dept: "" },
-            { user: "north__7", pass: "123", name: "جون هنتر", rank: "A. Minister of Interior", dept: "" },
-            { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "A. Minister of Interior", dept: "" },
-            { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
-            { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
-            { user: "ylt0", pass: "123", name: "جوزيف مورفي", rank: "A'Chief Of Police", dept: "" },
-            { user: "ia9q_2", pass: "123", name: "محمد المطيري 2", rank: "Police Commander", dept: "" },
-            { user: "t1iq", pass: "123", name: "سفر الدوسري", rank: "Police Commander", dept: "" },
-            { user: "3ljb", pass: "123", name: "ميشيل بيتر", rank: "Police Commander", dept: "" },
-            { user: "basku0", pass: "123", name: "سايكو دام", rank: "Police Commander", dept: "" },
-            { user: "iilother", pass: "123", name: "لوثر ماركوس", rank: "L.S.P.D Chief", dept: "" },
-            { user: "mohammed9117956", pass: "123", name: "محمد الخالدي", rank: "Deputy L.S.P.D Chief", dept: "" },
-            { user: "neax7", pass: "123", name: "سيف الدوسري", rank: "High Commander", dept: "" },
-            { user: "9rth", pass: "123", name: "جاكس ريبر", rank: "High Commander", dept: "" },
-            { user: "4lmd", pass: "123", name: "صقر المجد", rank: "High Commander", dept: "" },
-            { user: "3njw.1_68178", pass: "123", name: "ليون ماركو", rank: "High Commander", dept: "" },
-            { user: "biggboss_055", pass: "123", name: "سعيد احمد", rank: "High Commander", dept: "" },
-            { user: "kq_0", pass: "123", name: "تركي دميتري", rank: "High Commander", dept: "" },
-            { user: "_2gg", pass: "123", name: "مارك بانثر", rank: "High Commander", dept: "" },
-            { user: "idarls", pass: "123", name: "سلفر ستالون", rank: "General", dept: "" },
-            { user: "q2_rr", pass: "123", name: "تانا الشمري", rank: "General", dept: "" },
-            { user: "Saeed Faiz", pass: "123", name: "معالي سعيد فايز", rank: "Colonel", dept: "" },
-            { user: "alhtlani55", pass: "123", name: "نواف الهتلاني", rank: "Major", dept: "" },
-            { user: "qgr9", pass: "123", name: "كارلوس الشمري", rank: "Major", dept: "" },
-            { user: "ah.46", pass: "123", name: "مشبب العتيبي", rank: "Captain", dept: "" },
-            { user: "tav.l7", pass: "123", name: "تاف مارفل", rank: "Captain", dept: "" },
-            { user: "2m.ulster", pass: "123", name: "نواف عبدالله", rank: "Captain", dept: "" },
-            { user: "w.ssk", pass: "123", name: "ناصر  اسلا", rank: "First Lieutenant", dept: "" },
-            { user: "i_s7s", pass: "123", name: "حسين الحازمي", rank: "First Lieutenant", dept: "" },
-            { user: "ple.6", pass: "123", name: "عسكر الرشيدي", rank: "First Lieutenant", dept: "" },
-            { user: "z4.e", pass: "123", name: "جهيمان العتيبي", rank: "First Lieutenant", dept: "" },
-            { user: "lwx_515", pass: "123", name: "مشعل ثامر", rank: "First Lieutenant", dept: "" },
-            { user: "9fsl", pass: "123", name: "فيصل بن سلمان", rank: "First Lieutenant", dept: "" },
-            { user: "3hwe", pass: "123", name: "راد السبيعي", rank: "Lieutenant", dept: "" },
-            { user: "ire.sh", pass: "123", name: "خالد احمد", rank: "Lieutenant", dept: "" },
-            { user: "r_0c", pass: "123", name: "هزاع إلتشابو", rank: "Lieutenant", dept: "" },
-            { user: "i.2lk", pass: "123", name: "سعود حمد", rank: "Lieutenant", dept: "" },
-            { user: "595h", pass: "123", name: "بتال", rank: "Lieutenant", dept: "" },
-            { user: "9_x", pass: "123", name: "وليام بيتر", rank: "Lieutenant", dept: "" },
-            { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" }
-        ];
         
-        const SystemRanks = [...OfficerRanks, ...EnlistedRanks];
+        let configOfficers = [];
+        let SystemRanks = [];
 
-        // 🟢 دالة التحقق الذكية: هل الشخص ضابط أو في الأكاديمية؟ 🟢
+        // 🟢 دالة التحقق: هل المستخدم يملك صلاحية أكاديمية أو هو ضابط؟ 🟢
         function hasAcademyAccess() {
-            return (isOfficer || myDept.trim() === "Police Academy");
+            return (isOfficer || myDept === "Police Academy");
         }
 
         const i18n = {
@@ -898,8 +780,18 @@
         }
 
         function login() {
-            const u = document.getElementById('userInput').value.trim(); const p = document.getElementById('passInput').value.trim();
-            let allUsers = [...ConfigUsers, ...(db.customUsers || [])];
+            const u = document.getElementById('userInput').value.trim(); 
+            const p = document.getElementById('passInput').value.trim();
+            
+            // سحب الكونفق بشكل آمن
+            let confUsers = (typeof ConfigUsers !== 'undefined') ? ConfigUsers : [];
+            let confOff = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : [];
+            let confEnlist = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : [];
+            
+            configOfficers = confOff;
+            SystemRanks = [...confOff, ...confEnlist];
+
+            let allUsers = [...confUsers, ...(db.customUsers || [])];
             let foundUser = allUsers.find(x => x.user === u && x.pass === p);
             
             if(foundUser) {
@@ -908,8 +800,10 @@
                 setTimeout(() => {
                     ls.style.display = 'none'; document.getElementById('mainWrapper').style.display = 'flex';
                     
-                    myRankIdx = SystemRanks.indexOf(foundUser.rank); if(myRankIdx === -1) myRankIdx = 999; 
-                    isOfficer = OfficerRanks.includes(foundUser.rank); 
+                    myRankIdx = SystemRanks.indexOf(foundUser.rank); 
+                    if(myRankIdx === -1) myRankIdx = 999; 
+                    
+                    isOfficer = configOfficers.includes(foundUser.rank); 
                     myName = foundUser.name;
                     myRank = foundUser.rank;
                     myDept = foundUser.dept || "";
@@ -947,22 +841,22 @@
         function logout() { location.reload(); }
         function goHome() { document.getElementById('moduleView').style.display = 'none'; document.getElementById('dashboardView').style.display = 'flex'; }
 
-        // 🟢 الدالة المسؤولة عن عرض الأقسام بالصلاحيات الجديدة 🟢
+        // 🟢 دالة إظهار الأقسام بعد التأكد من الصلاحيات 🟢
         function renderModules() {
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
                 
                 let canView = true;
 
-                // إذا كان القسم يتطلب رتبة ضابط
+                // إذا كان القسم يتطلب ضابط
                 if (m.reqOfficer) {
-                    canView = false; // مبدئياً نمنعه
-                    if (isOfficer) canView = true; // الضباط مسموح لهم دائماً
-                    // الأفراد مسموح لهم فقط إذا كان القسم يخص الأكاديمية وهم في الأكاديمية
-                    if (m.allowAcademy && myDept.trim() === "Police Academy") canView = true; 
+                    canView = false;
+                    if (isOfficer) canView = true; 
+                    // الاستثناء للأفراد اللي في الأكاديمية
+                    if (m.allowAcademy && myDept === "Police Academy") canView = true; 
                 }
 
-                if (!canView) return; // إذا ماعنده صلاحية، اخفِ الزر
+                if (!canView) return; 
 
                 c.innerHTML += `<div class="menu-btn" data-tilt data-tilt-max="20" data-tilt-speed="400" data-tilt-perspective="500" data-tilt-scale="1.05" data-tilt-glare data-tilt-max-glare="0.4" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
@@ -1001,7 +895,8 @@
                     let rankOptions = ''; SystemRanks.forEach((r, idx) => { if(idx > myRankIdx) rankOptions += `<option value="${r}">${r}</option>`; });
                     
                     let deptOptions = ''; 
-                    SecondaryRanks.forEach(d => { deptOptions += `<option value="${d}">${d}</option>`; });
+                    let confSec = (typeof SecondaryRanks !== 'undefined') ? SecondaryRanks : [];
+                    confSec.forEach(d => { deptOptions += `<option value="${d}">${d}</option>`; });
 
                     submitBtn.style.display = 'block'; 
                     inpArea.innerHTML = `
@@ -1055,7 +950,6 @@
             let pStatusText = pOpen ? '<span style="color:var(--green); font-weight:bold;">مفتوح 🟢</span>' : '<span style="color:var(--red); font-weight:bold;">مغلق 🔴</span>';
             let sStatusText = sOpen ? '<span style="color:var(--green); font-weight:bold;">مفتوح 🟢</span>' : '<span style="color:var(--red); font-weight:bold;">مغلق 🔴</span>';
 
-            // 🟢 استخدام التصريح الجديد للتحكم في الأزرار 🟢
             let toggleBtns = hasAcademyAccess() ? `
                 <div style="display:flex; justify-content:center; gap:20px; margin-top:20px; flex-wrap:wrap;">
                     <button class="submit-btn" onclick="toggleAppStatus('police')" style="width:250px; cursor:pointer;">تغيير حالة (شرطة تايتنز)</button>
@@ -1099,7 +993,6 @@
             [...db.applications].reverse().forEach((app, reverseIdx) => {
                 const idx = db.applications.length - 1 - reverseIdx; 
                 
-                // 🟢 استخدام التصريح الجديد لزر الحذف والقبول/الرفض 🟢
                 const delBtn = hasAcademyAccess() ? `<i class="fa-solid fa-trash action-icon icon-del" style="cursor:pointer; color:var(--red); position:absolute; top:20px; left:20px;" onclick="deleteApp(${idx})" title="حذف الطلب"></i>` : '';
                 
                 let statusHtml = '';
