@@ -42,7 +42,8 @@ const SecondaryRanks = [
 const ConfigUsers = [
     { user: "admin", pass: "123", name: "dev", rank: "Minister of Interior", dept: "" },
     { user: "wx8w", pass: "123", name: "جاهد المجاهد", rank: "Minister of Interior", dept: "" },
-    { user: "north__7", pass: "123", name: "جون هنتر", rank: "Deputy Minister of Interior", dept: "" },
+    { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Deputy Minister of Interior", dept: "" },
+    { user: "north__7", pass: "123", name: "جون هنتر", rank: "A. Minister of Interior", dept: "" },
     { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "A. Minister of Interior", dept: "" },
     { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
     { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
@@ -83,6 +84,7 @@ const ConfigUsers = [
     { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" },
     
 ];
+
 
 
 
