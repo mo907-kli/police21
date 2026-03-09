@@ -78,11 +78,8 @@
         #homeTab { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease; }
         #rulesTab, #jobsTab, #foundersTab { display: none; flex-direction: column; align-items: center; width: 100%; background: transparent; padding-bottom: 100px; animation: fadeIn 0.3s ease;}
         
-        @keyframes cinematicZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-        
-        .hero-section { display: flex; align-items: center; justify-content: center; position: relative; min-height: calc(100vh - 90px); width: 100%; overflow: hidden; }
-        .hero-bg { position: absolute; inset: 0; z-index: 1; background-size: cover; background-position: center; animation: cinematicZoom 25s infinite alternate linear; }
-        .hero-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(rgba(3, 5, 9, 0.7), rgba(3, 5, 9, 0.98)); }
+        /* 🟢 إزالة الصور من البنرات واستبدالها بإضاءة خفيفة رسمية 🟢 */
+        .hero-section { display: flex; align-items: center; justify-content: center; position: relative; min-height: calc(100vh - 90px); width: 100%; overflow: hidden; background: radial-gradient(circle at center, rgba(0, 234, 255, 0.05) 0%, transparent 60%); }
         .hero-content { position: relative; z-index: 3; text-align: center; max-width: 800px; padding: 40px; }
         .hero-content h1 { font-size: 5rem; color: #fff; font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 30px rgba(0,234,255,0.4); }
         .hero-content h1 span { color: var(--cyan); }
@@ -102,9 +99,8 @@
         .comm-link { color: #fff; font-weight: bold; font-size: 1.1rem; cursor: pointer; text-decoration: none; transition: 0.2s; }
         .comm-link:hover { color: var(--cyan); }
 
-        .animated-banner { position: relative; width: 100%; padding: 100px 20px; text-align: center; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .anim-bg { position: absolute; inset: 0; z-index: 1; background-size: cover; background-position: center; animation: cinematicZoom 25s infinite alternate ease-in-out; }
-        .anim-overlay { position: absolute; inset: 0; z-index: 2; background: linear-gradient(rgba(3, 5, 9, 0.8), var(--bg-deep)); }
+        /* 🟢 إزالة الصور من العناوين العلوية 🟢 */
+        .animated-banner { position: relative; width: 100%; padding: 100px 20px; text-align: center; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, rgba(0, 234, 255, 0.03) 0%, transparent 70%); }
         .anim-content { position: relative; z-index: 3; }
         .anim-title { font-size: 3.5rem; color: #fff; font-weight: 800; margin-bottom: 15px; text-shadow: 0 0 20px rgba(0,234,255,0.4);}
         .anim-title span { color: var(--cyan); }
@@ -343,8 +339,6 @@
 
         <div id="homeTab">
             <div class="hero-section">
-                <div class="hero-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1079065638502404167/1476012249083678874/RsBi88I.gif');"></div>
-                <div class="hero-overlay"></div>
                 <div class="hero-content">
                     <h1>إدارة <span>الشرطة</span></h1>
                     <p>حياكم الله في سيرفر تايتنز المتخصص في الرول بلاي، نحاول جاهدين تقديم أفضل تجربة للرول بلاي في الشرق الأوسط. انضم إلينا الآن وعيش حياتك كما تريد.</p>
@@ -379,8 +373,6 @@
 
         <div id="rulesTab">
             <div class="animated-banner">
-                <div class="anim-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1079065638502404167/1476008959059165265/iZe62uD.png');"></div>
-                <div class="anim-overlay"></div>
                 <div class="anim-content">
                     <h1 class="anim-title">الدستور <span>والقوانين</span></h1>
                     <div class="anim-subtitle">الرئيسية <span>></span> القوانين العامة</div>
@@ -437,8 +429,6 @@
 
         <div id="jobsTab">
             <div class="animated-banner">
-                <div class="anim-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1079065638502404167/1476017583965868125/r7HmhS8.png');"></div>
-                <div class="anim-overlay"></div>
                 <div class="anim-content">
                     <h1 class="anim-title">وظائف <span>المدينة</span></h1>
                     <div class="anim-subtitle">الرئيسية <span>></span> تقديم الوظائف</div>
@@ -464,8 +454,6 @@
 
         <div id="foundersTab">
             <div class="animated-banner">
-                <div class="anim-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1079065638502404167/1476016754705567824/D25Todl.png');"></div>
-                <div class="anim-overlay"></div>
                 <div class="anim-content">
                     <h1 class="anim-title">مسؤولين <span>الشرطة</span></h1>
                     <div class="anim-subtitle">الرئيسية <span>></span> مسؤولين</div>
