@@ -694,9 +694,11 @@
             }
         };
 
-        const modules = [
-            { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true },
-            { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true },
+const modules = [
+            // 🟢 أضفنا hideFromAcademy: true هنا عشان نخفيها عن الأكاديمية 🟢
+            { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true, hideFromAcademy: true },
+            { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true, hideFromAcademy: true },
+            
             { id: 'reports', i18n_t: 'm_rep', isReportForm: true },
             { id: 'crypto', i18n_t: 'm_cry', isCrypto: true },
             { id: 'blackbox', i18n_t: 'm_box', inputsAr: ['رقم السجل', 'كود الوصول'] },
@@ -1254,4 +1256,5 @@
     </script>
 </body>
 </html>
+
 
