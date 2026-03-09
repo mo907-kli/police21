@@ -73,7 +73,7 @@ const ConfigUsers = [
     { user: "ple.6", pass: "123", name: "عسكر الرشيدي", rank: "First Lieutenant", dept: "" },
     { user: "z4.e", pass: "123", name: "جهيمان العتيبي", rank: "First Lieutenant", dept: "" },
     { user: "lwx_515", pass: "123", name: "مشعل ثامر", rank: "First Lieutenant", dept: "" },
-    { user: "lwx_515", pass: "123", name: "الحربي غزالة", rank: "First Lieutenant", dept: "" },
+    { user: "9fsl", pass: "123", name: "فيصل بن سلمان", rank: "First Lieutenant", dept: "" },
     { user: "3hwe", pass: "123", name: "راد السبيعي", rank: "Lieutenant", dept: "" },
     { user: "ire.sh", pass: "123", name: "خالد احمد", rank: "Lieutenant", dept: "" },
     { user: "r_0c", pass: "123", name: "هزاع إلتشابو", rank: "Lieutenant", dept: "" },
@@ -83,5 +83,6 @@ const ConfigUsers = [
     { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" },
     
 ];
+
 
 
