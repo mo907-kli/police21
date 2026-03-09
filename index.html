@@ -78,7 +78,7 @@
         #homeTab { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease; }
         #rulesTab, #jobsTab, #foundersTab { display: none; flex-direction: column; align-items: center; width: 100%; background: transparent; padding-bottom: 100px; animation: fadeIn 0.3s ease;}
         
-        /* 🟢 إزالة الصور من البنرات واستبدالها بإضاءة خفيفة رسمية 🟢 */
+        /* 🟢 إزالة الصور من البنرات 🟢 */
         .hero-section { display: flex; align-items: center; justify-content: center; position: relative; min-height: calc(100vh - 90px); width: 100%; overflow: hidden; background: radial-gradient(circle at center, rgba(0, 234, 255, 0.05) 0%, transparent 60%); }
         .hero-content { position: relative; z-index: 3; text-align: center; max-width: 800px; padding: 40px; }
         .hero-content h1 { font-size: 5rem; color: #fff; font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 30px rgba(0,234,255,0.4); }
@@ -461,29 +461,20 @@
             </div>
             <div class="founders-grid">
                 <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="https://cdn.discordapp.com/avatars/1242594305508376738/10f20a4533d8f6a277c2c5af58d9fcd7.webp?size=1024" class="founder-img">
-                    <div class="founder-name">جاهد الجاهد</div>
+                    <img src="https://cdn.discordapp.com/avatars/930773715845775362/cf12eb896c5713a1d561d1685f0f5110.webp?size=1024" class="founder-img">
+                    <div class="founder-name">محمد المطيري</div>
                     <div class="founder-rank"> Minister of Interior </div>
                     <div class="founder-desc">معالي وزير الداخلية.</div>
                 </div>
                 <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="https://cdn.discordapp.com/avatars/930773715845775362/0c88052b5de3fa22a53d45384f6d0d96.webp?size=1024" class="founder-img">
-                    <div class="founder-name">محمد المطيري</div>
+                    <img src="https://cdn.discordapp.com/avatars/1103367015479128225/ecffe7e36c49df30cf6e9f008791ddd9.webp?size=1024" class="founder-img">
+                    <div class="founder-name">عوده الاحمري</div>
                     <div class="founder-rank">Deputy Minister of Interior</div>
                     <div class="founder-desc">معالي نائب وزير الداخلية.</div>
                 </div>
                 <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="رابط_الصورة_هنا" class="founder-img">
-    
-                    <div class="founder-name">جون هنتر</div>
-    
-                   <div class="founder-rank">A. Minister of Interior</div>
-    
-                   <div class="founder-desc">معالي مستشار وزير الداخلية.</div>
-                   </div>
-                <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="https://cdn.discordapp.com/avatars/936671728388673586/a5f7938ee0a9e3a3f806243ae366dc3e.webp?size=1024" class="founder-img">
-                    <div class="founder-name">فيكاريو اسلا</div>
+                    <img src="https://cdn.discordapp.com/avatars/983458724247109682/931c3445771e3481589e2d9cbb9a44a0.webp?size=1024" class="founder-img">
+                    <div class="founder-name">احمد الفهد</div>
                     <div class="founder-rank"> L.S.P.D Chief </div>
                     <div class="founder-desc">معالي رئيس الشرطة.</div>
                 </div>
@@ -612,7 +603,7 @@
     </div>
 
     <script>
-        // 🟢 روابط الصوت (بدون أخطاء) 🟢
+        // 🟢 روابط الصوت 🟢
         const successSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480272844402196784/vAulQyj.mp3");
         const errorSound = new Audio("https://cdn.discordapp.com/attachments/1079065638502404167/1480273461221003444/Y6uHG7S.mp3");
 
@@ -673,32 +664,10 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        const configOfficers = (typeof OfficerRanks !== 'undefined') ? OfficerRanks : ["Minister of Interior", "Police Commander", "L.S.P.D Chief", "Deputy L.S.P.D Chief", "Colonel", "Major", "Captain", "First Lieutenant", "Lieutenant"];
-        const configEnlisted = (typeof EnlistedRanks !== 'undefined') ? EnlistedRanks : ["Staff Sergeant", "First Sergeant", "Sergeant", "Senior Lead Officer", "Senior Officer", "Officer III", "Officer II", "Officer I", "Solo Cadet", "Cadet"];
-        const SystemRanks = [...configOfficers, ...configEnlisted];
-        
-        let myRankIdx = 99; 
-        let isOfficer = false; 
-        let myName = "";
-        let myDept = "";
-        let myRank = "";
-
-        const i18n = {
-            ar: {
-                login_title: "نظام إدارة الشرطة", login_ph_id: "اسم المستخدم", login_ph_pass: "كلمة المرور", login_btn: "تسجيل الدخول", login_err: "بيانات الدخول غير صحيحة", app_title: "إدارة الشرطة", btn_add: "إضافة / حفظ السجل", btn_back: "العودة للرئيسية",
-                m_set: "إعدادات التقديم", m_app: "طلبات التقديم", m_rep: "التقارير", m_cry: "قسم التشفير", m_box: "الصندوق الأسود", m_sav: "التقارير المحفوظة", m_not: "ملاحظات القيادة", m_map: "خرائط العمليات", m_off: "إدارة الحسابات", m_wan: "المطلوبون", m_tsk: "المهام والنقاط", m_gng: "قسم العصابات", m_vid: "قسم الفيديو", m_arm: "مستودع الأسلحة",
-                o_user: "اسم المستخدم", o_pass: "كلمة المرور", o_name: "الاسم الكامل", o_rank: "اختر الرتبة", o_err: "يرجى تعبئة جميع الحقول", o_exists: "موجود مسبقاً", o_no_perm: "لا تملك الصلاحية",
-                th_officer: "المسؤول", th_assignee: "المستلم", th_pts: "النقاط", th_reason: "المهمة الموكلة", th_status: "الحالة", th_act: "إجراء", st_pend: "قيد الانتظار", st_appr: "معتمدة ✔️",
-                v_title: "عنوان الفيديو", v_yt: "رابط يوتيوب", v_or: "أو ملف", r_name: "الاسم الكامل", r_badge: "البادج العسكري", r_crim: "نوع التقرير", r_det: "اكتب التقرير بالكامل هنا...",
-                cryp_title: "قسم التشفير", cryp_ph: "أدخل النص...", cryp_btn_enc: "تشفير", cryp_btn_dec: "فك تشفير", btn_close: "إغلاق"
-            }
-        };
-
-const modules = [
-            // 🟢 أضفنا hideFromAcademy: true هنا عشان نخفيها عن الأكاديمية 🟢
+        // 🟢 المصفوفة الرئيسية للأقسام مع خاصية الإخفاء 🟢
+        const modules = [
             { id: 'settings', i18n_t: 'm_set', isSettingsView: true, reqOfficer: true, hideFromAcademy: true },
             { id: 'applications', i18n_t: 'm_app', isAppsView: true, reqOfficer: true, hideFromAcademy: true },
-            
             { id: 'reports', i18n_t: 'm_rep', isReportForm: true },
             { id: 'crypto', i18n_t: 'm_cry', isCrypto: true },
             { id: 'blackbox', i18n_t: 'm_box', inputsAr: ['رقم السجل', 'كود الوصول'] },
@@ -715,6 +684,31 @@ const modules = [
 
         let currentLang = 'ar'; let currentModule = null;
         let db = { applications: [], reports: [], wanted: [], maps: [], officials: [], tasks: [], video: [], gangs: [], armory: [], notes: [], saved: [], blackbox: [], crypto: [], customUsers: [], settings: { policeOpen: true, selfOpen: true, appResetId: 1 } };
+        let configOfficers = [];
+        let configEnlisted = [];
+        let SystemRanks = [];
+
+        let myRankIdx = 99; 
+        let isOfficer = false; 
+        let myName = "";
+        let myDept = "";
+        let myRank = "";
+
+        // جلب الإعدادات من ملف config.js
+        if(typeof OfficerRanks !== 'undefined') configOfficers = OfficerRanks;
+        if(typeof EnlistedRanks !== 'undefined') configEnlisted = EnlistedRanks;
+        SystemRanks = [...configOfficers, ...configEnlisted];
+
+        const i18n = {
+            ar: {
+                login_title: "نظام إدارة الشرطة", login_ph_id: "اسم المستخدم", login_ph_pass: "كلمة المرور", login_btn: "تسجيل الدخول", login_err: "بيانات الدخول غير صحيحة", app_title: "إدارة الشرطة", btn_add: "إضافة / حفظ السجل", btn_back: "العودة للرئيسية",
+                m_set: "إعدادات التقديم", m_app: "طلبات التقديم", m_rep: "التقارير", m_cry: "قسم التشفير", m_box: "الصندوق الأسود", m_sav: "التقارير المحفوظة", m_not: "ملاحظات القيادة", m_map: "خرائط العمليات", m_off: "إدارة الحسابات", m_wan: "المطلوبون", m_tsk: "المهام والنقاط", m_gng: "قسم العصابات", m_vid: "قسم الفيديو", m_arm: "مستودع الأسلحة",
+                o_user: "اسم المستخدم", o_pass: "كلمة المرور", o_name: "الاسم الكامل", o_rank: "اختر الرتبة", o_err: "يرجى تعبئة جميع الحقول", o_exists: "موجود مسبقاً", o_no_perm: "لا تملك الصلاحية",
+                th_officer: "المسؤول", th_assignee: "المستلم", th_pts: "النقاط", th_reason: "المهمة الموكلة", th_status: "الحالة", th_act: "إجراء", st_pend: "قيد الانتظار", st_appr: "معتمدة ✔️",
+                v_title: "عنوان الفيديو", v_yt: "رابط يوتيوب", v_or: "أو ملف", r_name: "الاسم الكامل", r_badge: "البادج العسكري", r_crim: "نوع التقرير", r_det: "اكتب التقرير بالكامل هنا...",
+                cryp_title: "قسم التشفير", cryp_ph: "أدخل النص...", cryp_btn_enc: "تشفير", cryp_btn_dec: "فك تشفير", btn_close: "إغلاق"
+            }
+        };
 
         function cleanArray(data) {
             if (!data) return [];
@@ -846,14 +840,16 @@ const modules = [
         function logout() { location.reload(); }
         function goHome() { document.getElementById('moduleView').style.display = 'none'; document.getElementById('dashboardView').style.display = 'flex'; }
 
+        // 🟢 الدالة المسؤولة عن عرض الأقسام وإخفائها 🟢
         function renderModules() {
             const c = document.getElementById('modulesContainer'); c.innerHTML = ''; 
             modules.forEach((m, idx) => { 
-                // التحقق من أن الشخص ضابط (للاقسام الخاصة بالضباط)
+                
+                // 1. إخفاء الأقسام اللي تتطلب رتبة ضابط عن الأفراد العاديين
                 if (m.reqOfficer && !isOfficer) return; 
 
-                // 🟢 الكود الجديد: إخفاء الأقسام عن Police Academy 🟢
-                if (m.hideFromAcademy && myDept === "Police Academy") return;
+                // 2. 🟢 الكود الجديد: إخفاء إعدادات وطلبات التقديم عن أي شخص في الأكاديمية 🟢
+                if (m.hideFromAcademy && myDept.trim().toLowerCase() === "police academy") return;
 
                 c.innerHTML += `<div class="menu-btn" data-tilt data-tilt-max="20" data-tilt-speed="400" data-tilt-perspective="500" data-tilt-scale="1.05" data-tilt-glare data-tilt-max-glare="0.4" onclick="openMod('${m.id}')" style="animation-delay:${idx*0.05}s">${i18n['ar'][m.i18n_t]}</div>`; 
             });
@@ -1261,7 +1257,3 @@ const modules = [
     </script>
 </body>
 </html>
-
-
-
-
