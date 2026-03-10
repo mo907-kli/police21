@@ -36,19 +36,16 @@
         body { user-select: none; background: #020305; color: var(--text-main); font-family: var(--font-ar); min-height: 100vh; display: flex; flex-direction: column; position: relative; overflow-y: auto; overflow-x: hidden; }
         input, textarea, select, .crypto-res, .task-table td, .allow-select, .allow-select * { user-select: text !important; }
 
-        /* 🟢 1. خلفية النجوم 🟢 */
         #star-bg { position: fixed; inset: 0; z-index: -5; pointer-events: none; overflow: hidden; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite alternate; box-shadow: 0 0 5px rgba(0, 234, 255, 0.5); }
         @keyframes twinkle { 0% { opacity: 0.1; transform: scale(0.5); box-shadow: none; } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 234, 255, 0.8); } }
 
-        /* 🟢 2. انعكاس براقات الشرطة 🟢 */
         #bg-lights { position: fixed; inset: 0; z-index: -4; pointer-events: none; overflow: hidden; }
         .light-red { position: absolute; top: -30%; left: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(255, 0, 40, 0.25) 0%, transparent 70%); animation: pulseRed 1.5s infinite alternate ease-in-out; mix-blend-mode: screen; }
         .light-blue { position: absolute; bottom: -30%; right: -20%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(0, 160, 255, 0.25) 0%, transparent 70%); animation: pulseBlue 1.5s infinite alternate ease-in-out; mix-blend-mode: screen; }
         @keyframes pulseRed { 0% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
         @keyframes pulseBlue { 0% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.3; transform: scale(0.9); } }
 
-        /* 🟢 3. إحساس المطاردة الليلية (الخطوط) 🟢 */
         #bg-pursuit { position: fixed; inset: 0; z-index: -3; pointer-events: none; overflow: hidden; }
         .speed-line { position: absolute; width: 2px; height: 150px; background: linear-gradient(to bottom, transparent, rgba(0, 234, 255, 0.5), transparent); filter: blur(1px); animation: speedFall linear infinite; }
         .speed-line.red { background: linear-gradient(to bottom, transparent, rgba(255, 51, 51, 0.5), transparent); }
@@ -449,21 +446,27 @@
             </div>
             <div class="founders-grid">
                 <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="https://cdn.discordapp.com/avatars/930773715845775362/cf12eb896c5713a1d561d1685f0f5110.webp?size=1024" class="founder-img">
-                    <div class="founder-name">محمد المطيري</div>
-                    <div class="founder-rank"> Minister of Interior </div>
+                    <img src="https://cdn.discordapp.com/avatars/1242594305508376738/10f20a4533d8f6a277c2c5af58d9fcd7.webp?size=1024" class="founder-img" onerror="this.src='yyW7oBx.jpg'">
+                    <div class="founder-name">جاهد المجاهد</div>
+                    <div class="founder-rank">Minister of Interior</div>
                     <div class="founder-desc">معالي وزير الداخلية.</div>
                 </div>
                 <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="https://cdn.discordapp.com/avatars/1103367015479128225/ecffe7e36c49df30cf6e9f008791ddd9.webp?size=1024" class="founder-img">
-                    <div class="founder-name">عوده الاحمري</div>
+                    <img src="https://cdn.discordapp.com/avatars/930773715845775362/0c88052b5de3fa22a53d45384f6d0d96.webp?size=1024" class="founder-img">
+                    <div class="founder-name">محمد المطيري</div>
                     <div class="founder-rank">Deputy Minister of Interior</div>
                     <div class="founder-desc">معالي نائب وزير الداخلية.</div>
                 </div>
                 <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                    <img src="https://cdn.discordapp.com/avatars/983458724247109682/931c3445771e3481589e2d9cbb9a44a0.webp?size=1024" class="founder-img">
-                    <div class="founder-name">احمد الفهد</div>
-                    <div class="founder-rank"> L.S.P.D Chief </div>
+                    <img src="yyW7oBx.jpg" class="founder-img">
+                    <div class="founder-name">جون هنتر</div>
+                    <div class="founder-rank">Advisor of Interior</div>
+                    <div class="founder-desc">معالي مستشار وزير الداخلية.</div>
+                </div>
+                <div class="founder-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+                    <img src="https://cdn.discordapp.com/avatars/936671728388673586/a5f7938ee0a9e3a3f806243ae366dc3e.webp?size=1024" class="founder-img">
+                    <div class="founder-name">فيكاريو اسلا</div>
+                    <div class="founder-rank">Chief of Police</div>
                     <div class="founder-desc">معالي رئيس الشرطة.</div>
                 </div>
             </div>
