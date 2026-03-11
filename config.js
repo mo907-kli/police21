@@ -6,9 +6,6 @@ const OfficerRanks = [
     "Minister of Interior",
     "Deputy Minister of Interior",
     "A. Minister of Interior",
-    "Chief Of Police",
-    "Deputy Chief of Police",
-    "A'Chief Of Police",
     "Police Commander",
     "L.S.P.D Chief",
     "Deputy L.S.P.D Chief",
@@ -58,13 +55,9 @@ const ConfigUsers = [
     { user: "ia9q", pass: "123", name: "محمد المطيري", rank: "Deputy Minister of Interior", dept: "" },
     { user: "north__7", pass: "123", name: "جون هنتر", rank: "A. Minister of Interior", dept: "" },
     { user: "u1kx", pass: "123", name: "عوده الاحمري", rank: "A. Minister of Interior", dept: "" },
-    { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Chief Of Police", dept: "" },
-    { user: "2ii6", pass: "123", name: "فيكاريو  اسلا", rank: "Deputy Chief of Police", dept: "" },
-    { user: "ylt0", pass: "123", name: "جوزيف مورفي", rank: "A'Chief Of Police", dept: "" },
-    { user: "t1iq", pass: "123", name: "سفر الدوسري", rank: "Police Commander", dept: "" },
-    { user: "3ljb", pass: "123", name: "ميشيل بيتر", rank: "Police Commander", dept: "" },
-    { user: "basku0", pass: "123", name: "سايكو دام", rank: "Police Commander", dept: "" },
-    { user: "iilother", pass: "123", name: "لوثر ماركوس", rank: "L.S.P.D Chief", dept: "" },
+    { user: "notmiz.", pass: "123", name: "عيد علي", rank: "Police Commander", dept: "" },
+    { user: "ylt0", pass: "123", name: "فيكاريو  اسلا", rank: "L.S.P.D Chief", dept: "" },
+    { user: "iilother", pass: "123", name: "لوثر ماركوس", rank: "Deputy L.S.P.D Chief", dept: "" },
     { user: "mohammed9117956", pass: "123", name: "محمد الخالدي", rank: "Deputy L.S.P.D Chief", dept: "" },
     { user: "neax7", pass: "123", name: "سيف الدوسري", rank: "High Commander", dept: "" },
     { user: "9rth", pass: "123", name: "جاكس ريبر", rank: "High Commander", dept: "" },
@@ -95,4 +88,5 @@ const ConfigUsers = [
     { user: "9_x", pass: "123", name: "وليام بيتر", rank: "Lieutenant", dept: "" },
     { user: "mo", pass: "123", name: "dev", rank: "Cadet", dept: "Police Academy" }
 ];
+
 
